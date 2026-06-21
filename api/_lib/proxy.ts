@@ -36,13 +36,20 @@ export async function forward(
     return;
   }
 
-  // 2) 대상 URL 구성 (catch-all [...path] + 원본 쿼리스트링)
-  const segs = (req.query as Record<string, string | string[]>).path;
-  const pathArr = Array.isArray(segs) ? segs : segs ? [segs] : [];
-  const path = pathArr.join('/');
-  const qIdx = (req.url || '').indexOf('?');
-  const qs = qIdx >= 0 ? (req.url as string).slice(qIdx) : '';
-  const target = `${targetBase}/${path}${qs}`;
+  // 2) 대상 URL 구성
+  // vercel.json rewrites가 /api/proxy/<provider>/<path...> 를 이 함수로 보내며
+  // 원본 경로를 ?upstream=<path...> 로 전달한다. SDK가 추가한 그 외 쿼리는 그대로 전달.
+  const q = req.query as Record<string, string | string[]>;
+  const upstreamRaw = q.upstream;
+  const upstream = (Array.isArray(upstreamRaw) ? upstreamRaw[0] : upstreamRaw) || '';
+  const extra = new URLSearchParams();
+  for (const [k, v] of Object.entries(q)) {
+    if (k === 'upstream' || k === 'path') continue;
+    if (Array.isArray(v)) v.forEach((vv) => extra.append(k, vv));
+    else if (v != null) extra.append(k, v);
+  }
+  const extraQs = extra.toString();
+  const target = `${targetBase}/${upstream}${extraQs ? `?${extraQs}` : ''}`;
 
   // 3) 헤더 구성: 민감/홉바이홉 헤더 제거 후 provider 키 주입
   const skip = new Set([

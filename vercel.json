@@ -33,6 +33,18 @@
   ],
   "rewrites": [
     {
+      "source": "/api/proxy/anthropic/:path*",
+      "destination": "/api/proxy-anthropic?upstream=:path*"
+    },
+    {
+      "source": "/api/proxy/openai/:path*",
+      "destination": "/api/proxy-openai?upstream=:path*"
+    },
+    {
+      "source": "/api/proxy/gemini/:path*",
+      "destination": "/api/proxy-gemini?upstream=:path*"
+    },
+    {
       "source": "/((?!api).*)",
       "destination": "/index.html"
     }
