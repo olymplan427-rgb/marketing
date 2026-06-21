@@ -1,0 +1,5 @@
+{
+  "name": "AI 블로그 포스트 생성기",
+  "description": "AI를 활용하여 SEO에 최적화된 카테고리와 주제를 추천받고, 자연스러운 블로그 글을 자동으로 생성하는 애플리케이션입니다.",
+  "requestFramePermissions": []
+}

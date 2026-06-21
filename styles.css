@@ -1,0 +1,98 @@
+/* Global font settings - Pretendard */
+* {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+/* Custom animations for glassmorphism background */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Floating label focus styles */
+.peer:placeholder-shown ~ label {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.peer:focus ~ label,
+.peer:not(:placeholder-shown) ~ label {
+  top: 0.5rem;
+  transform: translateY(0);
+  font-size: 0.75rem;
+  color: #6366f1;
+  font-weight: 600;
+}
+
+/* Enhanced glassmorphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Button hover and focus enhancements */
+.enhanced-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.enhanced-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.enhanced-button:hover::before {
+  left: 100%;
+}
+
+/* Smooth transitions for all interactive elements */
+*:not(input):not(textarea):not(select) {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for glassmorphism theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.8);
+}
