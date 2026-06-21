@@ -152,11 +152,27 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                             </select>
                         </div>
 
-                        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/50 rounded-lg p-4">
-                            <p className="text-sm text-emerald-800 dark:text-emerald-300">
-                                <span className="font-semibold">🔒 API 키는 서버에서 안전하게 관리됩니다.</span><br />
-                                키를 직접 입력할 필요가 없습니다. 사용할 모델만 선택하세요.
-                            </p>
+                        <div>
+                            <label htmlFor="api-key" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex justify-between items-center">
+                                <span>{currentProviderConfig.name} API Key <span className="text-red-500 dark:text-red-400">*</span></span>
+                                <a
+                                    href={currentProviderConfig.keyUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 underline"
+                                >
+                                    API 키 발급받기
+                                </a>
+                            </label>
+                            <input
+                                id="api-key"
+                                type="password"
+                                value={apiKeys[activeProvider]}
+                                onChange={(e) => handleApiKeyChange(activeProvider, e.target.value)}
+                                placeholder={currentProviderConfig.keyPlaceholder}
+                                required
+                                className="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:outline-none placeholder-slate-400 dark:placeholder-slate-500"
+                            />
                         </div>
                     </div>
 
@@ -177,22 +193,41 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                         <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        사용 안내
+                        API 키 발급 가이드
                     </h2>
 
                     <div className="space-y-4">
-                        <div className="bg-emerald-50 dark:bg-emerald-900/30 border-l-4 border-emerald-400 dark:border-emerald-500 p-4 rounded-r-lg">
-                            <p className="text-sm text-emerald-800 dark:text-emerald-300">
-                                <span className="font-bold">🔒 API 키는 서버에서 안전하게 관리됩니다.</span> 모든 AI 호출은 서버를 통해 처리되며, 키가 브라우저에 노출되지 않습니다. 별도의 키 입력이 필요 없습니다.
-                            </p>
+                        <a
+                            href={currentProviderConfig.keyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all duration-200 transform hover:scale-[1.02]"
+                        >
+                            {currentProviderConfig.keyPageName}
+                        </a>
+
+                        <div className="bg-amber-50 dark:bg-amber-900/30 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-r-lg">
+                            <div className="flex">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-amber-400 dark:text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm text-amber-700 dark:text-amber-300">
+                                        <span className="font-bold">보안 팁:</span> API 키는 브라우저에만 저장되며 외부로 전송되지 않습니다. 하지만 보안을 위해 주기적으로 키를 재생성하는 것을 권장합니다.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 p-4 rounded-r-lg">
-                            <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">사용 방법</h3>
+                            <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">설정 방법</h3>
                             <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800 dark:text-blue-300">
-                                <li>사용할 AI 제공자(Gemini / OpenAI / Claude)를 선택</li>
-                                <li>세부 모델을 선택</li>
-                                <li>"설정 저장" 클릭 후 바로 사용</li>
+                                <li>위 버튼을 클릭하여 API 키 발급 페이지로 이동</li>
+                                <li>새로운 API 키를 생성</li>
+                                <li>생성된 키를 복사하여 위 입력란에 붙여넣기</li>
+                                <li>"설정 저장" 버튼을 클릭하여 저장</li>
                             </ol>
                         </div>
 
@@ -208,9 +243,9 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                                     <span className="font-medium text-slate-800 dark:text-slate-200">{selectedSubModels[activeProvider]}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600 dark:text-slate-400">API 키:</span>
-                                    <span className="font-medium text-green-600 dark:text-green-400">
-                                        ✓ 서버에서 관리됨
+                                    <span className="text-slate-600 dark:text-slate-400">API 키 상태:</span>
+                                    <span className={`font-medium ${apiKeys[activeProvider] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                        {apiKeys[activeProvider] ? '✓ 설정됨' : '✗ 미설정'}
                                     </span>
                                 </div>
                             </div>

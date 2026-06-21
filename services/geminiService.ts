@@ -1,26 +1,49 @@
 import { GoogleGenAI, Type, GenerateContentResponse, PersonGeneration } from "@google/genai";
 import type { BlogGenerationParams, FieldSuggestions, BlogPostResult } from '../types';
-import { proxyBase, getAiAuthToken } from './aiAuth';
 
 let ai: GoogleGenAI | null = null;
-let aiTokenSnapshot: string | null = null;
+let currentApiKey: string | null = null;
 
-// API 키는 서버리스 프록시(/api/proxy/gemini)에서 주입되므로 브라우저에서는 보관하지 않는다.
-export function setApiKey(_apiKey: string) { /* 키는 서버에서 관리됨 */ }
+export function setApiKey(apiKey: string) {
+  const sanitizedKey = apiKey?.trim().replace(/[^\x00-\x7F]/g, '') || '';
+
+  if (sanitizedKey && sanitizedKey !== currentApiKey) {
+    try {
+      ai = new GoogleGenAI({ apiKey: sanitizedKey });
+      currentApiKey = sanitizedKey;
+    } catch (error) {
+      console.error("Failed to initialize GoogleGenAI with the new API key:", error);
+      ai = null;
+      currentApiKey = null;
+      throw new Error("API 키 초기화에 실패했습니다. 유효한 키인지 확인해주세요.");
+    }
+  } else if (!sanitizedKey) {
+    ai = null;
+    currentApiKey = null;
+  }
+}
 
 const getAiInstance = (): GoogleGenAI => {
-    const token = getAiAuthToken();
-    // @google/genai는 커스텀 fetch를 지원하지 않으므로 토큰을 정적 헤더로 넣고,
-    // 토큰이 바뀌면 클라이언트를 재생성한다.
-    if (!ai || token !== aiTokenSnapshot) {
-        ai = new GoogleGenAI({
-            apiKey: 'proxy', // 실제 키는 서버 프록시에서 주입 (플레이스홀더)
-            httpOptions: {
-                baseUrl: `${proxyBase()}/api/proxy/gemini`,
-                headers: token ? { 'x-app-token': token } : {},
-            },
-        });
-        aiTokenSnapshot = token;
+    if (!ai) {
+        const savedApiKeys = localStorage.getItem('ai_api_keys');
+        let storedApiKey = '';
+        if (savedApiKeys) {
+            try {
+                const parsedKeys = JSON.parse(savedApiKeys);
+                storedApiKey = (parsedKeys.gemini || '').trim();
+            } catch (e) {
+                console.error('API 키 파싱 오류:', e);
+            }
+        }
+        if (storedApiKey) {
+            setApiKey(storedApiKey);
+            if (ai) return ai;
+        }
+        throw new Error(
+            "Gemini API 키가 설정되지 않았습니다.\n\n" +
+            "상단 메뉴에서 'AI 설정'으로 이동하여 API 키를 입력해주세요.\n" +
+            "API 키는 Google AI Studio(https://aistudio.google.com/app/apikey)에서 발급받을 수 있습니다."
+        );
     }
     return ai;
 }

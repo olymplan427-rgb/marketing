@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { authService, AuthUser } from '../services/authService';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { setAiAuthToken } from '../services/aiAuth';
 
 // 인증 확인 timeout (5초)
 const AUTH_TIMEOUT_MS = 5000;
@@ -46,26 +45,10 @@ export function useAuth() {
           setIsLoading(false);
         }
 
-        // AI 프록시 인증용 access token 초기 설정
-        try {
-          const session = await authService.getSession();
-          setAiAuthToken(session?.access_token ?? null);
-        } catch (e) {
-          console.error('AI 토큰 초기화 실패:', e);
-        }
-
         // 인증 상태 변경 리스너 등록
         const { data: { subscription } } = authService.onAuthStateChange(async (authUser) => {
           if (isMounted) {
             setUser(authUser);
-          }
-
-          // 로그인/로그아웃/토큰 갱신 시 AI 프록시 토큰 동기화
-          try {
-            const session = await authService.getSession();
-            setAiAuthToken(session?.access_token ?? null);
-          } catch (e) {
-            console.error('AI 토큰 동기화 실패:', e);
           }
 
           // 사용자가 로그인한 경우, Supabase에서 Threads 토큰을 가져와서 localStorage에 동기화
