@@ -43,9 +43,9 @@ const SUB_MODEL_CONFIG: Record<AIProvider, { label: string; models: { value: str
         { value: 'gpt-4.1-mini', display: 'GPT-4.1-mini' }
     ] },
     anthropic: { label: '세부 모델', models: [
-        { value: 'claude-3.5-sonnet', display: 'claude-3.5-sonnet' },
-        { value: 'claude-3-opus', display: 'claude-3-opus' },
-        { value: 'claude-3-haiku', display: 'claude-3-haiku' }
+        { value: 'claude-sonnet-4-6', display: 'Claude Sonnet 4.6 (균형)' },
+        { value: 'claude-opus-4-8', display: 'Claude Opus 4.8 (고품질)' },
+        { value: 'claude-haiku-4-5', display: 'Claude Haiku 4.5 (빠름·저렴)' }
     ] }
 };
 

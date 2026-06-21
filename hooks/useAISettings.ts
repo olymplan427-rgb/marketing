@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { setApiKey as setGeminiApiKey } from '../services/geminiService';
 import { setApiKey as setOpenAIApiKey, setModel as setOpenAIModel } from '../services/openaiService';
+import { setApiKey as setAnthropicApiKey, setModel as setAnthropicModel } from '../services/anthropicService';
 import { settingsService } from '../services/settingsService';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { PromptTemplates } from '../types';
@@ -31,7 +32,7 @@ export function useAISettings() {
     const savedProvider = localStorage.getItem('ai_active_provider') as AIProvider;
     return savedProvider && ['gemini', 'openai', 'anthropic'].includes(savedProvider)
       ? savedProvider
-      : 'gemini';
+      : 'anthropic';
   });
 
   const [selectedSubModels, setSelectedSubModels] = useState<Record<AIProvider, string>>(() => {
@@ -39,7 +40,7 @@ export function useAISettings() {
     const defaults: Record<AIProvider, string> = {
       gemini: 'gemini-2.5-pro',
       openai: 'gpt-4.1',
-      anthropic: 'claude-3.5-sonnet',
+      anthropic: 'claude-sonnet-4-6',
     };
     try {
       const parsed = saved ? JSON.parse(saved) : {};
@@ -94,7 +95,7 @@ export function useAISettings() {
 
             // localStorage에도 캐시
             localStorage.setItem('ai_api_keys', JSON.stringify(newApiKeys));
-            localStorage.setItem('ai_active_provider', settings.ai_settings.provider || 'gemini');
+            localStorage.setItem('ai_active_provider', settings.ai_settings.provider || 'anthropic');
           }
 
           // 프롬프트 템플릿 로드
@@ -148,6 +149,8 @@ export function useAISettings() {
       setGeminiApiKey(apiKeys.gemini);
     } else if (activeProvider === 'openai') {
       setOpenAIApiKey(apiKeys.openai);
+    } else if (activeProvider === 'anthropic') {
+      setAnthropicApiKey(apiKeys.anthropic);
     }
 
     // Supabase에도 저장
@@ -173,6 +176,8 @@ export function useAISettings() {
     // OpenAI 모델 설정
     if (activeProvider === 'openai') {
       setOpenAIModel(selectedSubModels.openai);
+    } else if (activeProvider === 'anthropic') {
+      setAnthropicModel(selectedSubModels.anthropic);
     }
   }, [selectedSubModels, activeProvider]);
 

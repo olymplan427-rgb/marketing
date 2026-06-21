@@ -13,6 +13,12 @@ import {
   generateFieldSuggestions as generateFieldSuggestionsOpenAI,
   generateImagePrompt as generateImagePromptOpenAI,
 } from '../services/openaiService';
+import {
+  generateSeoTopics as generateSeoTopicsAnthropic,
+  generateBlogPost as generateBlogPostAnthropic,
+  generateFieldSuggestions as generateFieldSuggestionsAnthropic,
+  generateImagePrompt as generateImagePromptAnthropic,
+} from '../services/anthropicService';
 import type {
   BlogGenerationParams,
   GeneratedImage,
@@ -50,6 +56,35 @@ const constructPromptFromTemplate = (
     .replace(/\$\{fileContents\}/g, fileContentText)
     .replace(/\$\{referenceUrlsSection\}/g, referenceUrlsSection)
     .replace(/\$\{year\}/g, String(year + 1));
+};
+
+// 활성 프로바이더에 맞는 텍스트 생성 함수 묶음을 반환.
+// 이미지 "생성"(Nano Banana/Imagen)은 Claude가 불가하므로 항상 Gemini를 사용하며 여기에 포함하지 않는다.
+const getTextServices = (provider: AIProvider) => {
+  switch (provider) {
+    case 'openai':
+      return {
+        generateSeoTopics: generateSeoTopicsOpenAI,
+        generateFieldSuggestions: generateFieldSuggestionsOpenAI,
+        generateBlogPost: generateBlogPostOpenAI,
+        generateImagePrompt: generateImagePromptOpenAI,
+      };
+    case 'anthropic':
+      return {
+        generateSeoTopics: generateSeoTopicsAnthropic,
+        generateFieldSuggestions: generateFieldSuggestionsAnthropic,
+        generateBlogPost: generateBlogPostAnthropic,
+        generateImagePrompt: generateImagePromptAnthropic,
+      };
+    case 'gemini':
+    default:
+      return {
+        generateSeoTopics: generateSeoTopicsGemini,
+        generateFieldSuggestions: generateFieldSuggestionsGemini,
+        generateBlogPost: generateBlogPostGemini,
+        generateImagePrompt: generateImagenPrompt,
+      };
+  }
 };
 
 /**
@@ -167,9 +202,8 @@ export function useBlogGeneration(
     setGeneratedImages(initialImages);
 
     prompts.forEach((prompt, index) => {
-      const generatePromptFn = activeProvider === 'openai'
-        ? () => generateImagePromptOpenAI(prompt, promptTemplates.imagenPrompt)
-        : () => generateImagenPrompt(prompt, promptTemplates.imagenPrompt);
+      const generatePromptFn = () =>
+        getTextServices(activeProvider).generateImagePrompt(prompt, promptTemplates.imagenPrompt);
 
       setTimeout(() => {
         generatePromptFn()
@@ -263,7 +297,7 @@ export function useBlogGeneration(
       .replace(/\$\{category\}/g, formState.category)
       .replace(/\$\{referenceUrlsSection\}/g, referenceUrlsSection);
 
-    const generateFn = activeProvider === 'openai' ? generateSeoTopicsOpenAI : generateSeoTopicsGemini;
+    const generateFn = getTextServices(activeProvider).generateSeoTopics;
     runAIAction('topics', () => generateFn(prompt).then(setTopicSuggestions));
   };
 
@@ -273,7 +307,7 @@ export function useBlogGeneration(
       return;
     }
     const prompt = promptTemplates.fieldSuggestion.replace(/\$\{topic\}/g, formState.topic);
-    const generateFn = activeProvider === 'openai' ? generateFieldSuggestionsOpenAI : generateFieldSuggestionsGemini;
+    const generateFn = getTextServices(activeProvider).generateFieldSuggestions;
     runAIAction('fieldSuggestions', () =>
       generateFn(prompt).then((suggestions) => {
         const keywordsString = suggestions.keywords.join(', ');
@@ -317,7 +351,7 @@ export function useBlogGeneration(
     setBlogSources([]);
     setGeneratedImages([]);
     const useSearch = !!formState.referenceUrls && formState.referenceUrls.trim().length > 0;
-    const generateFn = activeProvider === 'openai' ? generateBlogPostOpenAI : generateBlogPostGemini;
+    const generateFn = getTextServices(activeProvider).generateBlogPost;
     runAIAction('post', () =>
       generateFn(finalPrompt, useSearch).then((result: BlogPostResult) => {
         setBlogPost(result.text);
