@@ -8,6 +8,7 @@ import type { MenuItem } from './Sidebar';
 import type { BlogGenerationParams, GeneratedImage } from '../types';
 import type { AIProvider } from '../constants';
 import type { PromptTemplates } from '../types';
+import type { ContentHistory } from '../lib/supabase';
 
 // Lazy-loaded page components
 const AISettingsPage = React.lazy(() => import('./AISettingsPage'));
@@ -98,10 +99,10 @@ interface AppRouterProps {
   setBlogPost: React.Dispatch<React.SetStateAction<string>>;
   handleAddCategory: () => void;
   handleRemoveCategory: (category: string) => void;
-  handleGenerateTopics: () => Promise<void>;
-  handleGenerateFieldSuggestions: () => Promise<void>;
+  handleGenerateTopics: () => void | Promise<void>;
+  handleGenerateFieldSuggestions: () => void | Promise<void>;
   handleReviewPrompt: () => void;
-  handleSaveBlogPost: () => Promise<void>;
+  handleSaveBlogPost: () => void | Promise<void>;
   handleGenerateImage: (index: number, prompt: string) => void;
 
   // AI Settings props
@@ -117,7 +118,7 @@ interface AppRouterProps {
   onResetPromptTemplates: () => void;
 
   // Content History props
-  handleRestoreBlogPost: (post: string) => void;
+  handleRestoreBlogPost: (content: ContentHistory) => void;
 }
 
 const AppRouter: React.FC<AppRouterProps> = ({
@@ -162,7 +163,7 @@ const AppRouter: React.FC<AppRouterProps> = ({
   const config = headerConfig[activeMenu];
 
   return (
-    <div className="flex-1 overflow-y-auto dark:bg-slate-900">
+    <div className="flex-1 overflow-y-auto">
       {/* Header */}
       {config && (
         <Header

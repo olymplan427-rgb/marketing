@@ -18,15 +18,6 @@ export interface FieldSuggestions {
   writerInsight: string;
 }
 
-// FIX: Define and export StepCardProps to resolve import error in components/StepCard.tsx.
-export interface StepCardProps {
-  step: number | string;
-  title: string;
-  children: ReactNode;
-  isComplete: boolean;
-  isDisabled: boolean;
-}
-
 // FIX: Define and export SuggestionSelectorProps to resolve import error in components/SuggestionSelector.tsx.
 export interface SuggestionSelectorProps {
   label: string;

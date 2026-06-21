@@ -28,21 +28,21 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
-    <aside className={`${isCollapsed ? 'w-20' : 'w-64'} bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-r border-slate-200 dark:border-slate-700 shadow-lg flex flex-col h-screen sticky top-0 transition-all duration-300`}>
+    <aside className={`${isCollapsed ? 'w-20' : 'w-64'} bg-chalk border-r border-hairline flex flex-col h-screen sticky top-0 transition-all duration-300`}>
       {/* Logo/Brand */}
-      <div className="px-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between" style={{ height: '100px' }}>
+      <div className="px-6 border-b border-hairline flex items-center justify-between" style={{ height: '100px' }}>
         {!isCollapsed && (
           <div>
-            <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">AI Contents Studio</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">SNS Creator Manager</p>
+            <h1 className="text-lg font-bold text-graphite whitespace-nowrap">AI Contents Studio</h1>
+            <p className="text-xs text-concrete mt-1">SNS Creator Manager</p>
           </div>
         )}
         <button
           onClick={onToggleCollapse}
-          className={`p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${isCollapsed ? 'mx-auto' : ''}`}
+          className={`p-2 rounded-lg hover:bg-mist transition-colors ${isCollapsed ? 'mx-auto' : ''}`}
           title={isCollapsed ? '사이드바 펼치기' : '사이드바 접기'}
         >
-          <svg className={`w-5 h-5 text-slate-600 dark:text-slate-300 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className={`w-5 h-5 text-concrete transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
           </svg>
         </button>
@@ -57,8 +57,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
               to={menuItemToPath['blog-assistant']}
               className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-graphite text-chalk font-semibold'
+                  : 'text-graphite hover:bg-mist'
               }`}
               title="블로그 포스트"
             >
@@ -73,8 +73,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
               to={menuItemToPath['insta-content']}
               className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-graphite text-chalk font-semibold'
+                  : 'text-graphite hover:bg-mist'
               }`}
               title="인스타그램 포스트"
             >
@@ -91,8 +91,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
               to={menuItemToPath['insta-text-pool']}
               className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-graphite text-chalk font-semibold'
+                  : 'text-graphite hover:bg-mist'
               }`}
               title="텍스트 풀 관리"
             >
@@ -109,8 +109,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
               to={menuItemToPath['insta-history']}
               className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-graphite text-chalk font-semibold'
+                  : 'text-graphite hover:bg-mist'
               }`}
               title="포스트 히스토리"
             >
@@ -127,8 +127,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
               to={menuItemToPath['threads-auto-posting']}
               className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-graphite text-chalk font-semibold'
+                  : 'text-graphite hover:bg-mist'
               }`}
               title="쓰레드 포스트"
             >
@@ -145,8 +145,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
               to={menuItemToPath['content-history']}
               className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-graphite text-chalk font-semibold'
+                  : 'text-graphite hover:bg-mist'
               }`}
               title="컨텐츠 히스토리"
             >
@@ -161,7 +161,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
           <li className="mt-2">
             <button
               onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-left text-graphite hover:bg-mist transition-all duration-200"
               title="설정"
             >
               <div className="flex items-center gap-3">
@@ -191,8 +191,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
                     to={menuItemToPath['ai-settings']}
                     className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-left text-sm transition-all duration-200 ${
                       isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium shadow-sm'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                        ? 'bg-graphite text-chalk font-medium'
+                        : 'text-concrete hover:bg-mist'
                     }`}
                     title="AI 설정"
                   >
@@ -207,8 +207,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
                     to={menuItemToPath['prompt-settings']}
                     className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-left text-sm transition-all duration-200 ${
                       isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium shadow-sm'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                        ? 'bg-graphite text-chalk font-medium'
+                        : 'text-concrete hover:bg-mist'
                     }`}
                     title="프롬프트 설정"
                   >
@@ -223,8 +223,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
                     to={menuItemToPath['sns-management']}
                     className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-left text-sm transition-all duration-200 ${
                       isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium shadow-sm'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                        ? 'bg-graphite text-chalk font-medium'
+                        : 'text-concrete hover:bg-mist'
                     }`}
                     title="운영중인 SNS"
                   >
@@ -239,8 +239,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
                     to={menuItemToPath['dark-mode']}
                     className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-left text-sm transition-all duration-200 ${
                       isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium shadow-sm'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                        ? 'bg-graphite text-chalk font-medium'
+                        : 'text-concrete hover:bg-mist'
                     }`}
                     title="다크모드 설정"
                   >
@@ -257,8 +257,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuChange, isCollapsed
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-        <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
+      <div className="p-4 border-t border-hairline">
+        <p className="text-xs text-concrete text-center">
           &copy; {new Date().getFullYear()} AI Contents Studio
         </p>
       </div>

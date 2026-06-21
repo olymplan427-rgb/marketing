@@ -7,8 +7,8 @@ import Loader from './Loader';
  */
 const PageLoader: React.FC = () => (
   <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-    <Loader className="w-12 h-12 text-blue-600" />
-    <p className="text-slate-600 dark:text-slate-400 text-sm">
+    <Loader className="w-12 h-12 text-graphite" />
+    <p className="text-concrete text-sm">
       페이지를 불러오는 중...
     </p>
   </div>

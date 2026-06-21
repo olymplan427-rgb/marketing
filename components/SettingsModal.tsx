@@ -85,8 +85,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             className="fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4 transition-opacity duration-300 animate-fadeIn"
             onClick={onClose}
         >
-            <div 
-                className="bg-slate-800 text-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col transform transition-transform duration-300 animate-scaleIn"
+            <div
+                className="bg-slate-800 text-white rounded-card border border-slate-700 w-full max-w-3xl max-h-[90vh] flex flex-col transition-transform duration-300 animate-scaleIn"
                 onClick={(e) => e.stopPropagation()}
             >
                 <header className="flex items-center justify-between p-5 border-b border-slate-700">
@@ -106,7 +106,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 const provider = PROVIDER_CONFIG[providerKey];
                                 const isSelected = localActiveProvider === providerKey;
                                 return (
-                                    <label key={providerKey} className={`relative block p-4 rounded-lg border-2 cursor-pointer transition-all ${isSelected ? 'bg-blue-500/20 border-blue-500' : 'bg-slate-700/50 border-slate-600 hover:border-slate-500'}`}>
+                                    <label key={providerKey} className={`relative block p-4 rounded-lg border-2 cursor-pointer transition-colors ${isSelected ? 'bg-slate-700 border-slate-400' : 'bg-slate-700 border-slate-600 hover:border-slate-500'}`}>
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <span className="font-bold text-base">{provider.name}</span>
@@ -114,7 +114,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                             </div>
                                             <div className="flex-shrink-0 ml-4 mt-1">
                                                 <input type="radio" name="ai-model" className="sr-only" value={providerKey} checked={isSelected} onChange={() => setLocalActiveProvider(providerKey)} />
-                                                <div className={`w-5 h-5 rounded-full border-2 ${isSelected ? 'bg-blue-500 border-blue-400' : 'bg-slate-600 border-slate-500'}`}></div>
+                                                <div className={`w-5 h-5 rounded-full border-2 ${isSelected ? 'bg-white border-slate-300' : 'bg-slate-600 border-slate-500'}`}></div>
                                             </div>
                                         </div>
                                     </label>
@@ -128,7 +128,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 id="sub-model"
                                 value={localSubModels[localActiveProvider]}
                                 onChange={(e) => setLocalSubModels(prev => ({ ...prev, [localActiveProvider]: e.target.value }))}
-                                className="w-full bg-slate-700 border border-slate-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-slate-400 focus:outline-none"
                             >
                                 {SUB_MODEL_CONFIG[localActiveProvider].models.map(model => (
                                     <option key={model} value={model}>{model}</option>
@@ -138,8 +138,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
                          <div className="space-y-2">
                             <label htmlFor="api-key" className="text-sm font-medium text-slate-400 flex justify-between items-center">
-                               <span>{currentProviderConfig.name} API Key <span className="text-red-400">*</span></span>
-                               <a href={currentProviderConfig.keyUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300">
+                               <span>{currentProviderConfig.name} API Key <span className="text-slate-300">*</span></span>
+                               <a href={currentProviderConfig.keyUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-300 hover:text-white">
                                     API 키 발급받기
                                </a>
                             </label>
@@ -151,28 +151,28 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     onChange={(e) => handleApiKeyChange(localActiveProvider, e.target.value)}
                                     placeholder={currentProviderConfig.keyPlaceholder}
                                     required
-                                    className="w-full bg-slate-700 border border-slate-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-slate-400 focus:outline-none"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {/* Right Side: Guide */}
-                    <div className="p-6 bg-slate-900/40">
+                    <div className="p-6 bg-slate-900">
                          <h3 className="text-lg font-medium text-slate-300 mb-4 flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
                             API 키 발급 가이드
                          </h3>
-                         <a href={currentProviderConfig.keyUrl} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg transition-colors">
+                         <a href={currentProviderConfig.keyUrl} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-white hover:bg-slate-200 text-slate-900 font-bold py-2.5 px-4 rounded-lg transition-colors">
                             {currentProviderConfig.keyPageName}
                          </a>
-                         <div className="mt-4 text-sm text-amber-300/80 bg-amber-500/20 p-3 rounded-lg">
+                         <div className="mt-4 text-sm text-slate-300 bg-slate-700 p-3 rounded-lg border border-slate-600">
                             <p><span className="font-bold">💡 팁:</span> API 키는 브라우저에만 저장되며 외부로 전송되지 않습니다. 하지만 보안을 위해 주기적으로 키를 재 생성하는 것을 권장합니다.</p>
                          </div>
                     </div>
                 </main>
                 
-                <footer className="flex justify-end items-center gap-3 p-4 bg-slate-900/50 border-t border-slate-700 rounded-b-xl">
+                <footer className="flex justify-end items-center gap-3 p-4 bg-slate-900 border-t border-slate-700 rounded-b-card">
                     <button 
                         onClick={onClose}
                         className="px-5 py-2 text-sm font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors"
@@ -181,7 +181,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     </button>
                     <button
                         onClick={handleSave}
-                        className="flex items-center justify-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                        className="flex items-center justify-center gap-2 px-5 py-2 text-sm font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors"
                     >
                          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" /><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M12 2v2" /><path d="M12 22v-2" /><path d="m17 7 1.4-1.4" /><path d="m6.4 18.4 1.4-1.4" /><path d="M22 12h-2" /><path d="M4 12H2" /><path d="m17 17-1.4 1.4" /><path d="m6.4 5.6-1.4 1.4" /></svg>
                         설정 저장

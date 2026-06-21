@@ -23,24 +23,24 @@ const BlogSourcesDisplay: React.FC<BlogSourcesDisplayProps> = ({ sources }) => {
     }
 
     return (
-        <div className="bg-white border border-slate-200/50 rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-4">참고 자료 (AI 웹 검색)</h2>
+        <div className="bg-chalk border border-hairline rounded-card p-6">
+            <h2 className="text-xl font-bold text-graphite mb-4">참고 자료 (AI 웹 검색)</h2>
             <ul className="space-y-3">
                 {sources.map((source, index) => (
                     <li key={index} className="flex items-start gap-3">
                          <div className="flex-shrink-0 mt-1">
-                           <LinkIcon className="w-4 h-4 text-slate-400" />
+                           <LinkIcon className="w-4 h-4 text-ash" />
                         </div>
                         <div>
                             <a 
                                 href={source.uri} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+                                className="text-sm font-medium text-graphite hover:text-carbon hover:underline"
                             >
                                 {source.title || source.uri}
                             </a>
-                            <p className="text-xs text-slate-500 break-all">{source.uri}</p>
+                            <p className="text-xs text-concrete break-all">{source.uri}</p>
                         </div>
                     </li>
                 ))}

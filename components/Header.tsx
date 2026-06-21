@@ -5,7 +5,7 @@ type IconType = 'tistory' | 'instagram' | 'threads' | 'content-history' | 'ai-se
 interface HeaderProps {
     title: string;
     subtitle?: string;
-    iconType?: IconType;
+    iconType?: IconType | string;
 }
 
 const Header: React.FC<HeaderProps> = ({ title, subtitle, iconType }) => {
@@ -73,12 +73,12 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle, iconType }) => {
     };
 
     return (
-        <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
+        <header className="bg-chalk border-b border-hairline sticky top-0 z-40">
             <div className="container mx-auto px-4">
                 <div className="flex items-center" style={{ height: '100px' }}>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{title}</h1>
-                        {subtitle && <p className="text-sm text-slate-500 dark:text-slate-400 hidden sm:block">{subtitle}</p>}
+                        <h1 className="text-2xl font-bold text-graphite">{title}</h1>
+                        {subtitle && <p className="text-sm text-concrete hidden sm:block">{subtitle}</p>}
                     </div>
                 </div>
             </div>

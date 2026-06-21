@@ -17,7 +17,25 @@
         extend: {
           fontFamily: {
             sans: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', '"Helvetica Neue"', '"Segoe UI"', '"Apple SD Gothic Neo"', '"Noto Sans KR"', '"Malgun Gothic"', 'sans-serif'],
-          }
+            mono: ['"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          },
+          // DESIGN.md monochrome tokens — values reference CSS vars in styles.css
+          // so styles.css stays the single source of truth.
+          colors: {
+            graphite: 'var(--color-graphite)',
+            carbon: 'var(--color-carbon)',
+            concrete: 'var(--color-concrete)',
+            ash: 'var(--color-ash)',
+            smoke: 'var(--color-smoke)',
+            hairline: 'var(--color-hairline)',
+            mist: 'var(--color-mist)',
+            chalk: 'var(--color-chalk)',
+          },
+          borderRadius: {
+            card: 'var(--radius-xl)',   // 14px
+            nav: 'var(--radius-lg)',    // 10px
+            badge: 'var(--radius-3xl)', // 26px
+          },
         }
       }
     }
@@ -32,10 +50,9 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen">
+<body class="bg-chalk min-h-screen">
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

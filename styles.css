@@ -1,6 +1,90 @@
+/* ============================================================
+   Design Tokens — Monochrome Swiss-grid system (DESIGN.md)
+   Foundation layer only: adding these does not change any
+   current rendering. Components opt in by referencing the
+   tokens / Tailwind theme keys (border-hairline, bg-graphite …).
+   한글 본문은 Pretendard 유지, 라틴/숫자만 타이트 트래킹.
+   ============================================================ */
+:root {
+  /* Colors */
+  --color-graphite: #0a0a0a;   /* primary ink, single CTA fill */
+  --color-pure-black: #000000;
+  --color-carbon: #171717;     /* inverted surface */
+  --color-concrete: #737373;   /* secondary / muted text */
+  --color-ash: #a1a1a1;        /* disabled borders */
+  --color-smoke: #b9b9b9;
+  --color-hairline: #e5e5e5;   /* the load-bearing border color */
+  --color-mist: #f2f2f2;       /* muted surface fill */
+  --color-chalk: #ffffff;      /* canvas + card surface */
+
+  /* Surfaces */
+  --surface-canvas: #ffffff;
+  --surface-card: #ffffff;
+  --surface-muted: #f2f2f2;
+  --surface-inverted: #171717;
+
+  /* Typography — keep Pretendard for Korean; Geist Mono for latin/technical micro-copy */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Type scale */
+  --text-caption: 12px;  --leading-caption: 1.5;
+  --text-body: 14px;     --leading-body: 1.43;
+  --text-subheading: 18px; --leading-subheading: 1.5; --tracking-subheading: -0.025em;
+  --text-display: 48px;  --leading-display: 1.1;  --tracking-display: -0.05em;
+
+  /* Spacing scale */
+  --spacing-4: 4px;   --spacing-6: 6px;   --spacing-8: 8px;
+  --spacing-10: 10px; --spacing-12: 12px; --spacing-16: 16px;
+  --spacing-20: 20px; --spacing-24: 24px; --spacing-32: 32px;
+  --spacing-40: 40px; --spacing-48: 48px; --spacing-80: 80px;
+
+  /* Layout */
+  --page-max-width: 1200px;
+  --section-gap: 48px;
+  --card-padding: 16px;
+  --element-gap: 8px;
+
+  /* Border radius (clean values; export's 9996/159981 were artifacts) */
+  --radius-md: 4px;     /* checkboxes */
+  --radius-lg: 10px;    /* nav, inputs, buttons */
+  --radius-xl: 14px;    /* cards */
+  --radius-3xl: 26px;   /* badges */
+  --radius-full: 9999px;/* pills, toggles */
+}
+
+/* Dark mode = inverted monochrome tokens (DESIGN.md inverted surface #171717).
+   Because components use the token classes (bg-chalk, text-graphite, border-hairline …),
+   inverting the token VALUES here makes dark mode monochrome automatically — no per-element
+   dark: classes needed. Tailwind darkMode:'class' toggles `.dark` on <html>. */
+.dark {
+  --color-graphite: #ededed;   /* ink/primary text becomes light */
+  --color-pure-black: #ffffff;
+  --color-carbon: #d4d4d4;      /* CTA hover (slightly darker light) */
+  --color-concrete: #9a9a9a;    /* secondary/muted text */
+  --color-ash: #6b6b6b;
+  --color-smoke: #3a3a3a;
+  --color-hairline: #2e2e2e;    /* borders */
+  --color-mist: #1f1f1f;        /* muted surface */
+  --color-chalk: #171717;       /* canvas + card surface */
+
+  --surface-canvas: #0f0f0f;
+  --surface-card: #171717;
+  --surface-muted: #1f1f1f;
+  --surface-inverted: #ffffff;
+}
+
 /* Global font settings - Pretendard */
 * {
-  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Latin / numeric micro-copy: tight tracking + tabular numerals.
+   Apply with class="num" on spans holding latin/number content only —
+   never on Korean body text (네모틀은 음수 자간이 답답해 보임). */
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 /* Custom animations for glassmorphism background */
@@ -32,7 +116,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-concrete);
 }
 
 .peer:focus ~ label,
@@ -40,59 +124,43 @@
   top: 0.5rem;
   transform: translateY(0);
   font-size: 0.75rem;
-  color: #6366f1;
+  color: var(--color-graphite);
   font-weight: 600;
 }
 
-/* Enhanced glassmorphism effects */
+/* Flattened: glass-card redefined to border-first flat surface.
+   Every component using .glass-card becomes flat with no per-file edit. */
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  background: var(--surface-card);
+  border: 1px solid var(--color-hairline);
 }
 
-/* Button hover and focus enhancements */
+/* enhanced-button shimmer removed — the flat system has no gradient sweep.
+   Kept as a no-op so existing class usages don't break. */
 .enhanced-button {
   position: relative;
-  overflow: hidden;
 }
 
-.enhanced-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.enhanced-button:hover::before {
-  left: 100%;
-}
-
-/* Smooth transitions for all interactive elements */
+/* Targeted transitions only (no layout-affecting `all`, shorter duration). */
 *:not(input):not(textarea):not(select) {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
-/* Custom scrollbar for glassmorphism theme */
+/* Neutral monochrome scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-mist);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.5);
+  background: var(--color-smoke);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.8);
+  background: var(--color-concrete);
 }

@@ -16,150 +16,49 @@ const DeletionStatus: React.FC = () => {
   }, []);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.iconContainer}>
-          <div style={styles.successIcon}>✓</div>
+    <div className="flex justify-center items-center min-h-screen bg-chalk p-5">
+      <div className="bg-chalk rounded-card border border-hairline p-10 max-w-[600px] w-full text-center">
+        <div className="mb-6">
+          <div className="w-16 h-16 bg-graphite rounded-full flex items-center justify-center mx-auto text-chalk text-3xl font-bold">✓</div>
         </div>
 
-        <h1 style={styles.title}>데이터 삭제 요청 완료</h1>
+        <h1 className="text-[28px] font-bold mb-6 text-graphite">데이터 삭제 요청 완료</h1>
 
-        <div style={styles.content}>
-          <p style={styles.message}>
+        <div className="text-left mb-8">
+          <p className="text-base text-concrete mb-6 leading-relaxed">
             귀하의 데이터 삭제 요청이 정상적으로 접수되었습니다.
           </p>
 
           {confirmationCode && (
-            <div style={styles.codeBox}>
-              <p style={styles.codeLabel}>확인 코드:</p>
-              <code style={styles.code}>{confirmationCode}</code>
+            <div className="bg-mist p-4 rounded-lg mb-6">
+              <p className="text-sm text-concrete mb-2">확인 코드:</p>
+              <code className="text-lg font-bold text-graphite font-mono">{confirmationCode}</code>
             </div>
           )}
 
-          <div style={styles.infoBox}>
-            <h3 style={styles.infoTitle}>처리 내역:</h3>
-            <ul style={styles.list}>
+          <div className="bg-mist p-5 rounded-lg mb-6">
+            <h3 className="text-base font-bold text-graphite mb-3">처리 내역:</h3>
+            <ul className="list-none p-0 m-0 text-graphite">
               <li>✓ Threads 연동 정보 삭제</li>
               <li>✓ 저장된 포스트 데이터 삭제</li>
               <li>✓ 액세스 토큰 무효화</li>
             </ul>
           </div>
 
-          <p style={styles.note}>
+          <p className="text-sm text-ash italic">
             모든 데이터는 30일 이내에 완전히 삭제됩니다.
           </p>
         </div>
 
         <button
           onClick={() => window.location.href = '/'}
-          style={styles.button}
+          className="px-8 py-3 bg-graphite text-chalk rounded-lg text-base cursor-pointer hover:bg-carbon transition-colors"
         >
           홈으로 돌아가기
         </button>
       </div>
     </div>
   );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    padding: '20px'
-  },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    padding: '40px',
-    maxWidth: '600px',
-    width: '100%',
-    textAlign: 'center',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-  },
-  iconContainer: {
-    marginBottom: '24px'
-  },
-  successIcon: {
-    width: '64px',
-    height: '64px',
-    backgroundColor: '#4CAF50',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto',
-    color: 'white',
-    fontSize: '32px',
-    fontWeight: 'bold'
-  },
-  title: {
-    fontSize: '28px',
-    fontWeight: 'bold',
-    marginBottom: '24px',
-    color: '#333'
-  },
-  content: {
-    textAlign: 'left',
-    marginBottom: '32px'
-  },
-  message: {
-    fontSize: '16px',
-    color: '#666',
-    marginBottom: '24px',
-    lineHeight: '1.6'
-  },
-  codeBox: {
-    backgroundColor: '#f8f9fa',
-    padding: '16px',
-    borderRadius: '8px',
-    marginBottom: '24px'
-  },
-  codeLabel: {
-    fontSize: '14px',
-    color: '#666',
-    marginBottom: '8px'
-  },
-  code: {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    color: '#333',
-    fontFamily: 'monospace'
-  },
-  infoBox: {
-    backgroundColor: '#e3f2fd',
-    padding: '20px',
-    borderRadius: '8px',
-    marginBottom: '24px'
-  },
-  infoTitle: {
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: '#1976d2',
-    marginBottom: '12px'
-  },
-  list: {
-    listStyle: 'none',
-    padding: 0,
-    margin: 0
-  },
-  note: {
-    fontSize: '14px',
-    color: '#999',
-    fontStyle: 'italic'
-  },
-  button: {
-    padding: '12px 32px',
-    backgroundColor: '#3498db',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '16px',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s'
-  }
 };
 
 export default DeletionStatus;

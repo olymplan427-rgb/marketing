@@ -310,6 +310,7 @@ const ThreadsAutoPosting: React.FC = () => {
             if (pendingItems.length > 0) {
               console.log(`Supabase에서 ${pendingItems.length}개의 pending 항목 정리 중...`);
               for (const item of pendingItems) {
+                if (!item.id) continue;
                 try {
                   await historyService.deleteContent(item.id);
                 } catch (err) {
@@ -368,7 +369,7 @@ const ThreadsAutoPosting: React.FC = () => {
             try {
               const loadedPersona = JSON.parse(personaRecord.content);
               setPersona(loadedPersona);
-              setPersonaId(personaRecord.id); // ID 저장
+              setPersonaId(personaRecord.id ?? null); // ID 저장
               localStorage.setItem('threads_persona', personaRecord.content);
               console.log('페르소나 설정 Supabase에서 불러옴');
             } catch (err) {
@@ -512,8 +513,9 @@ const ThreadsAutoPosting: React.FC = () => {
 
             // 저장된 UUID로 ID 업데이트
             if (savedContent?.id) {
+              const newId = savedContent.id;
               setMaterials(prev =>
-                prev.map(m => m.id === material.id ? { ...m, id: savedContent.id } : m)
+                prev.map(m => m.id === material.id ? { ...m, id: newId } : m)
               );
             }
           }
@@ -756,7 +758,7 @@ ${num > 1 ? `이전 아이디어들과는 다른 새로운 관점이나 주제�
               }
             });
 
-            const text = response.text;
+            const text = response.text || '';
 
             // 참고 소스 추출 (각 아이디어마다 개별 소스, 최대 5개로 제한)
             const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
@@ -950,7 +952,7 @@ ${persona.target}에게 흥미롭고 유용한 쓰레드 콘텐츠 아이디어�
           }
         });
 
-        const jsonText = response.text;
+        const jsonText = response.text ?? '';
         const result = JSON.parse(jsonText);
 
         newMaterials = result.ideas.slice(0, 3).map((idea: any, index: number) => ({
@@ -1039,9 +1041,10 @@ ${useSearch ? `8. 웹 검색을 활용한 경우, 콘텐츠 작성 후 다음 �
 
       // Sources 병합: result.sources와 기존 material.sources의 title 정보를 유지
       let mergedSources = material.sources || [];
-      if (result.sources.length > 0) {
+      const resultSources = result.sources || [];
+      if (resultSources.length > 0) {
         // result.sources의 URI를 사용하되, 기존 sources의 title이 더 좋으면 그것을 유지
-        mergedSources = result.sources.map((newSource, idx) => {
+        mergedSources = resultSources.map((newSource, idx) => {
           const existingSource = material.sources?.[idx];
           // 기존 source의 title이 도메인이 아닌 실제 제목이면 유지
           if (existingSource && existingSource.title &&
@@ -1829,24 +1832,24 @@ ${modifyInstructions}
   return (
     <div className="max-w-7xl mx-auto">
       {/* Threads 인증 상태 섹션 */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-200">
+      <div className="bg-chalk rounded-card p-6 mb-6 border border-hairline">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-mist border border-hairline rounded-card flex items-center justify-center">
+              <svg className="w-7 h-7 text-graphite" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.5 12.068c0-3.518.85-6.373 2.495-8.432C5.852 1.332 8.605.15 12.186.126h.014c3.581.024 6.334 1.206 8.184 3.51C21.85 5.695 22.7 8.55 22.7 12.068c0 3.518-.85 6.373-2.495 8.432-1.652 2.051-4.405 3.233-7.986 3.257h-.033zm-.007-22.75h-.007c-3.209.022-5.558 1.082-7.004 3.15C3.685 6.314 2.95 8.854 2.95 12.068c0 3.214.735 5.753 2.218 7.668 1.446 2.068 3.795 3.128 7.004 3.15h.014c3.209-.022 5.558-1.082 7.004-3.15 1.483-1.915 2.218-4.454 2.218-7.668 0-3.214-.735-5.753-2.218-7.668-1.446-2.068-3.795-3.128-7.004-3.15h-.007z"/>
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-graphite flex items-center gap-2">
                 Threads 연동 상태
               </h2>
               {isThreadsAuthenticated && threadsUserProfile ? (
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="text-sm text-concrete mt-1">
                   @{threadsUserProfile.username}로 연동됨
                 </p>
               ) : (
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="text-sm text-concrete mt-1">
                   Threads 계정을 연동하여 자동 포스팅을 시작하세요
                 </p>
               )}
@@ -1855,14 +1858,14 @@ ${modifyInstructions}
 
           <div className="flex gap-2">
             {isLoadingThreadsProfile ? (
-              <div className="px-6 py-2 bg-slate-100 rounded-lg">
-                <span className="text-sm text-slate-600">로딩 중...</span>
+              <div className="px-6 py-2 bg-mist rounded-lg">
+                <span className="text-sm text-concrete">로딩 중...</span>
               </div>
             ) : isThreadsAuthenticated ? (
               <>
                 <button
                   onClick={handleDiagnoseThreads}
-                  className="px-6 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-2"
+                  className="px-6 py-2 text-sm font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded-lg transition-colors flex items-center gap-2"
                   title="토큰 및 권한 확인"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1872,7 +1875,7 @@ ${modifyInstructions}
                 </button>
                 <button
                   onClick={handleThreadsLogout}
-                  className="px-6 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-2"
+                  className="px-6 py-2 text-sm font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded-lg transition-colors flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -1883,7 +1886,7 @@ ${modifyInstructions}
             ) : (
               <button
                 onClick={handleThreadsLogin}
-                className="px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+                className="px-6 py-3 text-sm font-medium bg-graphite text-chalk hover:bg-carbon rounded-lg transition-colors flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.5 12.068c0-3.518.85-6.373 2.495-8.432C5.852 1.332 8.605.15 12.186.126h.014c3.581.024 6.334 1.206 8.184 3.51C21.85 5.695 22.7 8.55 22.7 12.068c0 3.518-.85 6.373-2.495 8.432-1.652 2.051-4.405 3.233-7.986 3.257h-.033zm-.007-22.75h-.007c-3.209.022-5.558 1.082-7.004 3.15C3.685 6.314 2.95 8.854 2.95 12.068c0 3.214.735 5.753 2.218 7.668 1.446 2.068 3.795 3.128 7.004 3.15h.014c3.209-.022 5.558-1.082 7.004-3.15 1.483-1.915 2.218-4.454 2.218-7.668 0-3.214-.735-5.753-2.218-7.668-1.446-2.068-3.795-3.128-7.004-3.15h-.007z"/>
@@ -1895,8 +1898,8 @@ ${modifyInstructions}
         </div>
 
         {!isThreadsAuthenticated && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
+          <div className="mt-4 p-4 bg-mist border border-hairline rounded-lg">
+            <p className="text-sm text-graphite">
               <strong>💡 Threads 연동 방법:</strong> 위의 "Threads 계정 연동하기" 버튼을 클릭하여 Threads 계정으로 로그인하면, 생성한 포스트를 자동으로 Threads에 발행할 수 있습니다.
             </p>
           </div>
@@ -1904,17 +1907,17 @@ ${modifyInstructions}
       </div>
 
       {/* 페르소나 설정 섹션 (읽기 전용) */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-200">
+      <div className="bg-chalk rounded-card p-6 mb-6 border border-hairline">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <h2 className="text-xl font-bold text-graphite flex items-center gap-2">
+            <svg className="w-6 h-6 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             페르소나 설정
           </h2>
           <button
             onClick={handleOpenPersonaPanel}
-            className="px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-sm font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded-lg transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -1924,28 +1927,28 @@ ${modifyInstructions}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-slate-50 rounded-lg p-4">
-            <label className="block text-sm font-medium text-slate-600 mb-2">언어</label>
-            <p className="text-slate-800 font-semibold">{persona.language || '설정되지 않음'}</p>
+          <div className="bg-mist rounded-lg p-4">
+            <label className="block text-sm font-medium text-concrete mb-2">언어</label>
+            <p className="text-graphite font-semibold">{persona.language || '설정되지 않음'}</p>
           </div>
 
-          <div className="bg-slate-50 rounded-lg p-4">
-            <label className="block text-sm font-medium text-slate-600 mb-2">컨셉 (채널 및 컨텐츠)</label>
-            <p className="text-slate-800 font-semibold">{persona.concept || '설정되지 않음'}</p>
+          <div className="bg-mist rounded-lg p-4">
+            <label className="block text-sm font-medium text-concrete mb-2">컨셉 (채널 및 컨텐츠)</label>
+            <p className="text-graphite font-semibold">{persona.concept || '설정되지 않음'}</p>
           </div>
 
-          <div className="bg-slate-50 rounded-lg p-4">
-            <label className="block text-sm font-medium text-slate-600 mb-2">타겟</label>
-            <p className="text-slate-800 font-semibold">{persona.target || '설정되지 않음'}</p>
+          <div className="bg-mist rounded-lg p-4">
+            <label className="block text-sm font-medium text-concrete mb-2">타겟</label>
+            <p className="text-graphite font-semibold">{persona.target || '설정되지 않음'}</p>
           </div>
         </div>
 
         {(!persona.concept || !persona.target) && (
-          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-2">
-            <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mt-4 p-3 bg-mist border border-hairline rounded-lg flex items-start gap-2">
+            <svg className="w-5 h-5 text-graphite flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <p className="text-sm text-yellow-800">
+            <p className="text-sm text-graphite">
               페르소나를 설정하면 AI가 더 정확한 콘텐츠를 생성할 수 있습니다.
             </p>
           </div>
@@ -1953,9 +1956,9 @@ ${modifyInstructions}
       </div>
 
       {/* 콘텐츠 소재 선택 섹션 */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-200">
-        <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-chalk rounded-card p-6 mb-6 border border-hairline">
+        <h2 className="text-xl font-bold text-graphite mb-4 flex items-center gap-2">
+          <svg className="w-6 h-6 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           콘텐츠 소재 선택
@@ -1972,12 +1975,12 @@ ${modifyInstructions}
               onChange={(e) => setSourceType(e.target.value as ContentSourceType)}
               className="sr-only"
             />
-            <div className={`px-4 py-3 rounded-lg border-2 transition-all text-center ${
+            <div className={`px-4 py-3 rounded-lg border transition-colors text-center ${
               sourceType === 'search'
-                ? 'border-indigo-600 bg-indigo-50'
-                : 'border-slate-300 hover:border-slate-400'
+                ? 'border-graphite bg-mist'
+                : 'border-hairline hover:border-concrete'
             }`}>
-              <div className={`font-semibold ${sourceType === 'search' ? 'text-indigo-700' : 'text-slate-700'}`}>
+              <div className={`font-semibold ${sourceType === 'search' ? 'text-graphite' : 'text-concrete'}`}>
                 검색 정보 기반
               </div>
             </div>
@@ -1992,12 +1995,12 @@ ${modifyInstructions}
               onChange={(e) => setSourceType(e.target.value as ContentSourceType)}
               className="sr-only"
             />
-            <div className={`px-4 py-3 rounded-lg border-2 transition-all text-center ${
+            <div className={`px-4 py-3 rounded-lg border transition-colors text-center ${
               sourceType === 'creative'
-                ? 'border-indigo-600 bg-indigo-50'
-                : 'border-slate-300 hover:border-slate-400'
+                ? 'border-graphite bg-mist'
+                : 'border-hairline hover:border-concrete'
             }`}>
-              <div className={`font-semibold ${sourceType === 'creative' ? 'text-indigo-700' : 'text-slate-700'}`}>
+              <div className={`font-semibold ${sourceType === 'creative' ? 'text-graphite' : 'text-concrete'}`}>
                 창작 스토리 기반
               </div>
             </div>
@@ -2012,12 +2015,12 @@ ${modifyInstructions}
               onChange={(e) => setSourceType(e.target.value as ContentSourceType)}
               className="sr-only"
             />
-            <div className={`px-4 py-3 rounded-lg border-2 transition-all text-center ${
+            <div className={`px-4 py-3 rounded-lg border transition-colors text-center ${
               sourceType === 'internal'
-                ? 'border-indigo-600 bg-indigo-50'
-                : 'border-slate-300 hover:border-slate-400'
+                ? 'border-graphite bg-mist'
+                : 'border-hairline hover:border-concrete'
             }`}>
-              <div className={`font-semibold ${sourceType === 'internal' ? 'text-indigo-700' : 'text-slate-700'}`}>
+              <div className={`font-semibold ${sourceType === 'internal' ? 'text-graphite' : 'text-concrete'}`}>
                 내부 지식 기반
               </div>
             </div>
@@ -2026,39 +2029,39 @@ ${modifyInstructions}
 
         {/* 선택된 소재 타입에 따른 설명 및 입력 영역 */}
         {sourceType === 'search' && (
-          <div className="mb-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-sm text-slate-700 mb-3">
+          <div className="mb-4 p-4 bg-mist rounded-lg border border-hairline">
+            <p className="text-sm text-graphite mb-3">
               검색 기반 소재 발굴: 웹과 검색 정보의 특성(주제, 관점, 제목)을 적으면 관련 자료를 탐색+수집 다수의 아이디어 후보를 제안합니다.
             </p>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               어떤 소재에서, 어떤 종류의 정보를 찾아볼까요? (선택사항)
             </label>
             <textarea
               value={searchTopic}
               onChange={(e) => setSearchTopic(e.target.value)}
               placeholder="예: Reddit에서 AI 트렌드 검색, 네이버 블로그에서 마케팅 팁 찾기, 최신 테크 뉴스"
-              className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+              className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite transition-colors resize-none"
               rows={3}
             />
           </div>
         )}
 
         {sourceType === 'creative' && (
-          <div className="mb-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-sm text-slate-700">
+          <div className="mb-4 p-4 bg-mist rounded-lg border border-hairline">
+            <p className="text-sm text-graphite">
               창작 스토리: 외부 자료 없이 AI가 제안의 창작성 콘텐츠를 구성합니다.
             </p>
           </div>
         )}
 
         {sourceType === 'internal' && (
-          <div className="mb-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-sm text-slate-700 mb-3">
+          <div className="mb-4 p-4 bg-mist rounded-lg border border-hairline">
+            <p className="text-sm text-graphite mb-3">
               내부 지식: 계정에 업로드된 문서에서 정보를 추출해 콘텐츠를 구성합니다.
             </p>
-            <div className="bg-white rounded-lg p-4 border border-slate-200">
-              <h4 className="text-sm font-semibold text-slate-700 mb-2">내부 지식 문서</h4>
-              <p className="text-sm text-slate-600 mb-3">
+            <div className="bg-chalk rounded-lg p-4 border border-hairline">
+              <h4 className="text-sm font-semibold text-graphite mb-2">내부 지식 문서</h4>
+              <p className="text-sm text-concrete mb-3">
                 현재 계정에 등록된 문서가 없습니다.<br />
                 계정 관리에서 문서를 업로드하여 지식 관리를 시작하세요
               </p>
@@ -2069,11 +2072,11 @@ ${modifyInstructions}
         <button
           onClick={handleGenerateMaterials}
           disabled={isGenerating}
-          className="w-full px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 rounded-lg transition-colors font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          className="w-full px-6 py-3 bg-graphite text-chalk hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
         >
           {isGenerating ? (
             <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-chalk border-t-transparent rounded-full animate-spin"></div>
               AI 소재 생성 중...
             </>
           ) : (
@@ -2090,10 +2093,10 @@ ${modifyInstructions}
       {/* 칸반 보드 스타일 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* 작성 대기중 칸 */}
-        <div className="bg-orange-50 rounded-xl shadow-md p-4 border-2 border-orange-200 flex flex-col">
+        <div className="bg-mist rounded-card p-4 border border-hairline flex flex-col">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-orange-800 flex items-center gap-2">
-              <span className="bg-orange-200 text-orange-800 px-3 py-1 rounded-full text-sm font-bold">
+            <h2 className="text-lg font-bold text-graphite flex items-center gap-2">
+              <span className="bg-mist text-graphite border border-hairline px-3 py-1 rounded-full text-sm font-bold">
                 작성 대기중
               </span>
               <span>{pendingMaterials.length}</span>
@@ -2101,7 +2104,7 @@ ${modifyInstructions}
             {pendingMaterials.length > 0 && (
               <button
                 onClick={handleClearPendingMaterials}
-                className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-200"
+                className="px-3 py-1.5 text-xs font-medium text-graphite bg-chalk hover:bg-mist rounded-lg transition-colors border border-hairline"
                 title="작성 대기중 항목 전체 삭제"
               >
                 전체 삭제
@@ -2111,17 +2114,17 @@ ${modifyInstructions}
 
           <div className="flex-1 overflow-y-auto max-h-[calc(100vh-300px)]">
             {pendingMaterials.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-sm">
+              <div className="text-center py-8 text-concrete text-sm">
                 AI로 소재를 발굴하면 여기에 표시됩니다
               </div>
             ) : (
               <div className="space-y-3">
                 {pendingMaterials.map((material) => (
-                  <div key={material.id} className="bg-white rounded-lg p-4 border border-orange-200 shadow-sm hover:shadow-md transition-shadow relative group">
+                  <div key={material.id} className="bg-chalk rounded-lg p-4 border border-hairline transition-colors relative group">
                     {/* 삭제 버튼 (호버 시 표시) */}
                     <button
                       onClick={() => handleDeleteMaterial(material.id)}
-                      className="absolute top-2 right-2 p-1.5 text-red-600 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 p-1.5 text-graphite hover:bg-mist rounded opacity-0 group-hover:opacity-100 transition-opacity"
                       title="삭제"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2130,16 +2133,16 @@ ${modifyInstructions}
                     </button>
 
                     {/* 제목 */}
-                    <h3 className="font-bold text-sm text-slate-800 mb-2 pr-6">{material.title}</h3>
+                    <h3 className="font-bold text-sm text-graphite mb-2 pr-6">{material.title}</h3>
 
                     {/* 요약 */}
-                    <p className="text-xs text-slate-600 leading-relaxed mb-3 line-clamp-2">
+                    <p className="text-xs text-concrete leading-relaxed mb-3 line-clamp-2">
                       {material.summary}
                     </p>
 
                     {/* 카테고리 */}
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="inline-block px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">
+                      <span className="inline-block px-2 py-0.5 text-xs font-medium bg-mist text-graphite border border-hairline rounded">
                         {material.category}
                       </span>
                     </div>
@@ -2147,13 +2150,13 @@ ${modifyInstructions}
                     {/* 외부 지식 소스 */}
                     {material.sources && material.sources.length > 0 && (
                       <div className="mb-3">
-                        <p className="text-xs font-semibold text-slate-700 mb-1.5">외부 지식 소스</p>
+                        <p className="text-xs font-semibold text-graphite mb-1.5">외부 지식 소스</p>
                         <div className="space-y-1">
                           {material.sources.slice(0, 5).map((source: { uri: string; title: string }, idx: number) => {
                             const hasValidUri = source.uri && source.uri !== '#' && source.uri.startsWith('http');
                             return (
                               <div key={idx} className="flex items-start gap-1.5">
-                                <svg className="w-3 h-3 text-orange-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-3 h-3 text-concrete flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                 </svg>
                                 {hasValidUri ? (
@@ -2161,13 +2164,13 @@ ${modifyInstructions}
                                     href={source.uri}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-orange-600 hover:text-orange-800 hover:underline flex-1 line-clamp-1"
+                                    className="text-xs text-graphite hover:text-carbon hover:underline flex-1 line-clamp-1"
                                     title={source.title}
                                   >
                                     {source.title}
                                   </a>
                                 ) : (
-                                  <span className="text-xs text-slate-600 flex-1 line-clamp-1" title={source.title}>
+                                  <span className="text-xs text-concrete flex-1 line-clamp-1" title={source.title}>
                                     {source.title}
                                   </span>
                                 )}
@@ -2176,7 +2179,7 @@ ${modifyInstructions}
                           })}
                           {material.sources.slice(0, 5).map((source: { uri: string; title: string }, idx: number) => (
                             <div key={idx} className="flex items-start gap-1.5">
-                              <svg className="w-3 h-3 text-orange-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 text-concrete flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                               </svg>
                               {source.uri && source.uri.startsWith('http') ? (
@@ -2184,13 +2187,13 @@ ${modifyInstructions}
                                   href={source.uri}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs text-orange-600 hover:text-orange-800 hover:underline flex-1 line-clamp-1"
+                                  className="text-xs text-graphite hover:text-carbon hover:underline flex-1 line-clamp-1"
                                   title={source.title}
                                 >
                                   {source.title}
                                 </a>
                               ) : (
-                                <span className="text-xs text-slate-600 flex-1 line-clamp-1" title={source.title}>
+                                <span className="text-xs text-concrete flex-1 line-clamp-1" title={source.title}>
                                   {source.title}
                                 </span>
                               )}
@@ -2201,8 +2204,8 @@ ${modifyInstructions}
                     )}
 
                     {/* 하단: 날짜 및 버튼 */}
-                    <div className="pt-3 border-t border-slate-200">
-                      <p className="text-xs text-slate-500 mb-2">
+                    <div className="pt-3 border-t border-hairline">
+                      <p className="text-xs text-concrete mb-2">
                         {new Date(material.createdAt).toLocaleDateString('ko-KR', {
                           year: 'numeric',
                           month: '2-digit',
@@ -2213,11 +2216,11 @@ ${modifyInstructions}
                         <button
                           onClick={() => handleCreateDraft(material)}
                           disabled={isCreatingDraft === material.id}
-                          className="w-full px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 rounded transition-colors flex items-center justify-center gap-1"
+                          className="w-full px-3 py-1.5 text-xs font-medium bg-graphite text-chalk hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed rounded transition-colors flex items-center justify-center gap-1"
                         >
                           {isCreatingDraft === material.id ? (
                             <>
-                              <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <div className="w-3 h-3 border-2 border-chalk border-t-transparent rounded-full animate-spin"></div>
                               생성 중...
                             </>
                           ) : (
@@ -2239,10 +2242,10 @@ ${modifyInstructions}
         </div>
 
         {/* 초안 생성됨 칸 */}
-        <div className="bg-blue-50 rounded-xl shadow-md p-4 border-2 border-blue-200 flex flex-col">
+        <div className="bg-mist rounded-card p-4 border border-hairline flex flex-col">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-blue-800 flex items-center gap-2">
-              <span className="bg-blue-200 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
+            <h2 className="text-lg font-bold text-graphite flex items-center gap-2">
+              <span className="bg-mist text-graphite border border-hairline px-3 py-1 rounded-full text-sm font-bold">
                 초안 생성됨
               </span>
               <span>{draftMaterials.length}</span>
@@ -2251,17 +2254,17 @@ ${modifyInstructions}
 
           <div className="flex-1 overflow-y-auto max-h-[calc(100vh-300px)]">
             {draftMaterials.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-sm">
+              <div className="text-center py-8 text-concrete text-sm">
                 콘텐츠 생성 버튼을 누르면 초안이 여기에 표시됩니다
               </div>
             ) : (
               <div className="space-y-3">
                 {draftMaterials.map((material) => (
-                  <div key={material.id} className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm hover:shadow-md transition-shadow relative group">
+                  <div key={material.id} className="bg-chalk rounded-lg p-4 border border-hairline transition-colors relative group">
                     {/* 삭제 버튼 (호버 시 표시) */}
                     <button
                       onClick={() => handleDeleteMaterial(material.id)}
-                      className="absolute top-2 right-2 p-1.5 text-red-600 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 p-1.5 text-graphite hover:bg-mist rounded opacity-0 group-hover:opacity-100 transition-opacity"
                       title="삭제"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2270,16 +2273,16 @@ ${modifyInstructions}
                     </button>
 
                     {/* 제목 */}
-                    <h3 className="font-bold text-sm text-slate-800 mb-2 pr-6">{material.title}</h3>
+                    <h3 className="font-bold text-sm text-graphite mb-2 pr-6">{material.title}</h3>
 
                     {/* 요약 */}
-                    <p className="text-xs text-slate-600 leading-relaxed mb-3 line-clamp-2">
+                    <p className="text-xs text-concrete leading-relaxed mb-3 line-clamp-2">
                       {material.summary}
                     </p>
 
                     {/* 카테고리 */}
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="inline-block px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">
+                      <span className="inline-block px-2 py-0.5 text-xs font-medium bg-mist text-graphite border border-hairline rounded">
                         {material.category}
                       </span>
                     </div>
@@ -2287,13 +2290,13 @@ ${modifyInstructions}
                     {/* 외부 지식 소스 */}
                     {material.sources && material.sources.length > 0 && (
                       <div className="mb-3">
-                        <p className="text-xs font-semibold text-slate-700 mb-1.5">외부 지식 소스</p>
+                        <p className="text-xs font-semibold text-graphite mb-1.5">외부 지식 소스</p>
                         <div className="space-y-1">
                           {material.sources.slice(0, 5).map((source: { uri: string; title: string }, idx: number) => {
                             const hasValidUri = source.uri && source.uri !== '#' && source.uri.startsWith('http');
                             return (
                               <div key={idx} className="flex items-start gap-1.5">
-                                <svg className="w-3 h-3 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-3 h-3 text-concrete flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                 </svg>
                                 {hasValidUri ? (
@@ -2301,13 +2304,13 @@ ${modifyInstructions}
                                     href={source.uri}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex-1 line-clamp-1"
+                                    className="text-xs text-graphite hover:text-carbon hover:underline flex-1 line-clamp-1"
                                     title={source.title}
                                   >
                                     {source.title}
                                   </a>
                                 ) : (
-                                  <span className="text-xs text-slate-600 flex-1 line-clamp-1" title={source.title}>
+                                  <span className="text-xs text-concrete flex-1 line-clamp-1" title={source.title}>
                                     {source.title}
                                   </span>
                                 )}
@@ -2316,7 +2319,7 @@ ${modifyInstructions}
                           })}
                           {material.sources.slice(0, 5).map((source: { uri: string; title: string }, idx: number) => (
                             <div key={idx} className="flex items-start gap-1.5">
-                              <svg className="w-3 h-3 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 text-concrete flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                               </svg>
                               {source.uri && source.uri.startsWith('http') ? (
@@ -2324,13 +2327,13 @@ ${modifyInstructions}
                                   href={source.uri}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex-1 line-clamp-1"
+                                  className="text-xs text-graphite hover:text-carbon hover:underline flex-1 line-clamp-1"
                                   title={source.title}
                                 >
                                   {source.title}
                                 </a>
                               ) : (
-                                <span className="text-xs text-slate-600 flex-1 line-clamp-1" title={source.title}>
+                                <span className="text-xs text-concrete flex-1 line-clamp-1" title={source.title}>
                                   {source.title}
                                 </span>
                               )}
@@ -2341,8 +2344,8 @@ ${modifyInstructions}
                     )}
 
                     {/* 하단: 날짜 및 버튼 */}
-                    <div className="pt-3 border-t border-slate-200">
-                      <p className="text-xs text-slate-500 mb-2">
+                    <div className="pt-3 border-t border-hairline">
+                      <p className="text-xs text-concrete mb-2">
                         {new Date(material.createdAt).toLocaleDateString('ko-KR', {
                           year: 'numeric',
                           month: '2-digit',
@@ -2352,13 +2355,13 @@ ${modifyInstructions}
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleCreateDraft(material)}
-                          className="flex-1 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                          className="flex-1 px-3 py-1.5 text-xs font-medium text-graphite bg-mist hover:bg-concrete/10 rounded transition-colors"
                         >
                           콘텐츠 재생성
                         </button>
                         <button
                           onClick={() => setPreviewMaterial(material)}
-                          className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded transition-colors"
+                          className="flex-1 px-3 py-1.5 text-xs font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded transition-colors"
                         >
                           초안 확인하기
                         </button>
@@ -2372,10 +2375,10 @@ ${modifyInstructions}
         </div>
 
         {/* 초안 사용됨 칸 */}
-        <div className="bg-green-50 rounded-xl shadow-md p-4 border-2 border-green-200 flex flex-col">
+        <div className="bg-mist rounded-card p-4 border border-hairline flex flex-col">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-green-800 flex items-center gap-2">
-              <span className="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm font-bold">
+            <h2 className="text-lg font-bold text-graphite flex items-center gap-2">
+              <span className="bg-mist text-graphite border border-hairline px-3 py-1 rounded-full text-sm font-bold">
                 초안 사용됨
               </span>
               <span>{publishedMaterials.length}</span>
@@ -2384,17 +2387,17 @@ ${modifyInstructions}
 
           <div className="flex-1 overflow-y-auto max-h-[calc(100vh-300px)]">
             {publishedMaterials.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-sm">
+              <div className="text-center py-8 text-concrete text-sm">
                 발행 일자를 설정하면 여기로 이동합니다
               </div>
             ) : (
               <div className="space-y-3">
                 {publishedMaterials.map((material) => (
-                  <div key={material.id} className="bg-white rounded-lg p-4 border border-green-200 shadow-sm hover:shadow-md transition-shadow relative group">
+                  <div key={material.id} className="bg-chalk rounded-lg p-4 border border-hairline transition-colors relative group">
                     {/* 삭제 버튼 (호버 시 표시) */}
                     <button
                       onClick={() => handleDeleteMaterial(material.id)}
-                      className="absolute top-2 right-2 p-1.5 text-red-600 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 p-1.5 text-graphite hover:bg-mist rounded opacity-0 group-hover:opacity-100 transition-opacity"
                       title="삭제"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2402,9 +2405,9 @@ ${modifyInstructions}
                       </svg>
                     </button>
 
-                    <h3 className="font-bold text-sm text-slate-800 mb-2 pr-6">{material.title}</h3>
+                    <h3 className="font-bold text-sm text-graphite mb-2 pr-6">{material.title}</h3>
                     {material.publishDate && (
-                      <p className="text-xs text-green-700 mb-3">
+                      <p className="text-xs text-concrete mb-3">
                         📅 {new Date(material.publishDate).toLocaleString('ko-KR', {
                           year: 'numeric',
                           month: '2-digit',
@@ -2414,14 +2417,14 @@ ${modifyInstructions}
                         })}
                       </p>
                     )}
-                    <div className="bg-slate-50 rounded p-2 mb-3">
-                      <p className="text-xs text-slate-700 line-clamp-3">{material.draftContent}</p>
+                    <div className="bg-mist rounded p-2 mb-3">
+                      <p className="text-xs text-graphite line-clamp-3">{material.draftContent}</p>
                     </div>
 
                     {/* 콘텐츠 확인하기 버튼 */}
                     <button
                       onClick={() => handleViewInsights(material)}
-                      className="w-full px-4 py-2 text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="w-full px-4 py-2 text-sm font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -2447,66 +2450,66 @@ ${modifyInstructions}
 
           {/* 중앙 모달 패널 */}
           <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-4xl max-h-[90vh] bg-white shadow-2xl rounded-xl overflow-y-auto pointer-events-auto p-6">
+            <div className="w-full max-w-4xl max-h-[90vh] bg-chalk rounded-card overflow-y-auto pointer-events-auto p-6 border border-hairline">
               {/* 헤더 */}
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
-                <h2 className="text-2xl font-bold text-slate-800">스레드 계정명 AI 설정</h2>
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-hairline">
+                <h2 className="text-2xl font-bold text-graphite">스레드 계정명 AI 설정</h2>
                 <button
                   onClick={() => setIsPersonaPanelOpen(false)}
-                  className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-mist rounded-lg transition-colors"
                 >
-                  <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-concrete" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
 
               {/* 프로그레스 표시 */}
-              <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="mb-6 p-4 bg-mist rounded-lg border border-hairline">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-green-800">스레드 계정명 AI 설정</span>
-                  <span className="text-lg font-bold text-green-800">100/100</span>
+                  <span className="text-sm font-semibold text-graphite">스레드 계정명 AI 설정</span>
+                  <span className="text-lg font-bold text-graphite">100/100</span>
                 </div>
-                <div className="w-full h-2 bg-green-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-600 transition-all" style={{ width: '100%' }}></div>
+                <div className="w-full h-2 bg-concrete/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-graphite transition-colors" style={{ width: '100%' }}></div>
                 </div>
-                <p className="text-xs text-green-700 mt-2">완벽해요! AI가 최고의 콘텐츠를 만들 준비가 됐어요 🎯</p>
+                <p className="text-xs text-concrete mt-2">완벽해요! AI가 최고의 콘텐츠를 만들 준비가 됐어요 🎯</p>
               </div>
 
               {/* 탭 네비게이션 */}
-              <div className="flex gap-2 mb-6 border-b border-slate-200">
+              <div className="flex gap-2 mb-6 border-b border-hairline">
                 <button
                   onClick={() => setActiveTab('basic')}
-                  className={`px-4 py-3 font-medium transition-all border-b-2 ${
+                  className={`px-4 py-3 font-medium transition-colors border-b-2 ${
                     activeTab === 'basic'
-                      ? 'border-indigo-600 text-indigo-700'
-                      : 'border-transparent text-slate-600 hover:text-slate-800'
+                      ? 'border-graphite text-graphite'
+                      : 'border-transparent text-concrete hover:text-graphite'
                   }`}
                 >
                   기본 정보
-                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">30/30</span>
+                  <span className="ml-2 text-xs bg-mist text-graphite border border-hairline px-2 py-0.5 rounded-full">30/30</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('content')}
-                  className={`px-4 py-3 font-medium transition-all border-b-2 ${
+                  className={`px-4 py-3 font-medium transition-colors border-b-2 ${
                     activeTab === 'content'
-                      ? 'border-indigo-600 text-indigo-700'
-                      : 'border-transparent text-slate-600 hover:text-slate-800'
+                      ? 'border-graphite text-graphite'
+                      : 'border-transparent text-concrete hover:text-graphite'
                   }`}
                 >
                   콘텐츠 설정
-                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">40/40</span>
+                  <span className="ml-2 text-xs bg-mist text-graphite border border-hairline px-2 py-0.5 rounded-full">40/40</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('automation')}
-                  className={`px-4 py-3 font-medium transition-all border-b-2 ${
+                  className={`px-4 py-3 font-medium transition-colors border-b-2 ${
                     activeTab === 'automation'
-                      ? 'border-indigo-600 text-indigo-700'
-                      : 'border-transparent text-slate-600 hover:text-slate-800'
+                      ? 'border-graphite text-graphite'
+                      : 'border-transparent text-concrete hover:text-graphite'
                   }`}
                 >
                   자동화 설정
-                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">30/30</span>
+                  <span className="ml-2 text-xs bg-mist text-graphite border border-hairline px-2 py-0.5 rounded-full">30/30</span>
                 </button>
               </div>
 
@@ -2517,13 +2520,13 @@ ${modifyInstructions}
                   <>
                     {/* 언어 */}
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">
-                        언어 <span className="text-red-500">*</span>
+                      <label className="block text-sm font-semibold text-graphite mb-2">
+                        언어 <span className="text-graphite">*</span>
                       </label>
                       <select
                         value={editingPersona.language}
                         onChange={(e) => handleEditingPersonaChange('language', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite transition-colors"
                       >
                         <option value="Korean">한국어</option>
                         <option value="English">English</option>
@@ -2534,34 +2537,34 @@ ${modifyInstructions}
 
                     {/* 컨셉 */}
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">
-                        컨셉 <span className="text-red-500">*</span>
+                      <label className="block text-sm font-semibold text-graphite mb-2">
+                        컨셉 <span className="text-graphite">*</span>
                       </label>
                       <textarea
                         value={editingPersona.concept}
                         onChange={(e) => handleEditingPersonaChange('concept', e.target.value)}
                         rows={4}
                         placeholder="AI 시대, 사이버를 말하다 - 에이치텍크 전문가가 만에 따른 사.나.의 팀터 인사이트 외부"
-                        className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+                        className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite transition-colors resize-none"
                       />
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-concrete mt-1">
                         {editingPersona.concept.length}/2000
                       </p>
                     </div>
 
                     {/* 타겟 오디언스 */}
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">
-                        타겟 오디언스 <span className="text-red-500">*</span>
+                      <label className="block text-sm font-semibold text-graphite mb-2">
+                        타겟 오디언스 <span className="text-graphite">*</span>
                       </label>
                       <textarea
                         value={editingPersona.target}
                         onChange={(e) => handleEditingPersonaChange('target', e.target.value)}
                         rows={3}
                         placeholder="1차 타겟: 테크 얼리어답터 MZ세대 (25~40세) - 60% | 2차 타겟: 스토밍/테크 담당 존재 - 40%"
-                        className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+                        className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite transition-colors resize-none"
                       />
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-concrete mt-1">
                         {editingPersona.target.length}/500
                       </p>
                     </div>
@@ -2573,9 +2576,9 @@ ${modifyInstructions}
                   <>
                     {/* 글쓰기 프롬프트 */}
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-                        글쓰기 프롬프트 <span className="text-red-500">*</span>
-                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <label className="block text-sm font-semibold text-graphite mb-2 flex items-center gap-2">
+                        글쓰기 프롬프트 <span className="text-graphite">*</span>
+                        <svg className="w-4 h-4 text-ash" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </label>
@@ -2583,29 +2586,29 @@ ${modifyInstructions}
                         value={editingPersona.writingPrompt || ''}
                         onChange={(e) => handleEditingPersonaChange('writingPrompt', e.target.value)}
                         rows={12}
-                        className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono text-sm"
+                        className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite transition-colors font-mono text-sm"
                         placeholder="AI에게 어떤 스타일로 글을 써달라고 지시할지 입력하세요..."
                       />
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-concrete mt-1">
                         {(editingPersona.writingPrompt || '').length} 글자
                       </p>
                     </div>
 
                     {/* 참고할 글 스타일 */}
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center justify-between">
+                      <label className="block text-sm font-semibold text-graphite mb-2 flex items-center justify-between">
                         <span>참고할 글 스타일</span>
-                        <span className="text-xs text-slate-500 font-normal">
+                        <span className="text-xs text-concrete font-normal">
                           {editingPersona.referenceStyles.length > 0 ? `20/20점` : '25 추가됨'}
                         </span>
                       </label>
 
                       {/* 탭: 직접 입력 / 기존 포스트에서 선택 */}
-                      <div className="flex gap-2 mb-3 border-b border-slate-200">
-                        <button className="px-4 py-2 text-sm font-medium border-b-2 border-indigo-600 text-indigo-700">
+                      <div className="flex gap-2 mb-3 border-b border-hairline">
+                        <button className="px-4 py-2 text-sm font-medium border-b-2 border-graphite text-graphite">
                           직접 입력
                         </button>
-                        <button className="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-800">
+                        <button className="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-concrete hover:text-graphite">
                           기존 포스트에서 선택
                         </button>
                       </div>
@@ -2616,13 +2619,13 @@ ${modifyInstructions}
                           value={newReferenceStyle}
                           onChange={(e) => setNewReferenceStyle(e.target.value)}
                           rows={6}
-                          className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                          className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite transition-colors"
                           placeholder="새 참고할 글 스타일 추가"
                         />
                         <div className="flex justify-end">
                           <button
                             onClick={handleAddReferenceStyle}
-                            className="px-6 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-2"
+                            className="px-6 py-2 text-sm font-medium bg-graphite text-chalk hover:bg-carbon rounded-lg transition-colors flex items-center gap-2"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -2634,29 +2637,29 @@ ${modifyInstructions}
 
                       {/* 저장된 참고 글 스타일 목록 */}
                       {editingPersona.referenceStyles && editingPersona.referenceStyles.length > 0 && (
-                        <div className="border-t border-slate-200 pt-4">
+                        <div className="border-t border-hairline pt-4">
                           <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-sm font-semibold text-slate-700">
+                            <h4 className="text-sm font-semibold text-graphite">
                               저장된 참고할 글 스타일 ({editingPersona.referenceStyles.length})
                             </h4>
                           </div>
                           <div className="space-y-3 max-h-96 overflow-y-auto">
                             {editingPersona.referenceStyles.map((style) => (
-                              <div key={style.id} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                              <div key={style.id} className="bg-mist rounded-lg p-4 border border-hairline">
                                 <div className="flex items-start justify-between mb-2">
-                                  <p className="text-xs text-slate-500">
+                                  <p className="text-xs text-concrete">
                                     {new Date(style.addedDate).toLocaleDateString('ko-KR')}
                                   </p>
                                   <button
                                     onClick={() => handleDeleteReferenceStyle(style.id)}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded p-1 transition-colors"
+                                    className="text-graphite hover:text-carbon hover:bg-mist rounded p-1 transition-colors"
                                   >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                   </button>
                                 </div>
-                                <p className="text-sm text-slate-700 whitespace-pre-wrap">{style.content}</p>
+                                <p className="text-sm text-graphite whitespace-pre-wrap">{style.content}</p>
                               </div>
                             ))}
                           </div>
@@ -2666,23 +2669,23 @@ ${modifyInstructions}
 
                     {/* 내부 지식 관리 */}
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      <label className="block text-sm font-semibold text-graphite mb-2">
                         내부 지식 관리
                       </label>
-                      <p className="text-xs text-slate-600 mb-3">
+                      <p className="text-xs text-concrete mb-3">
                         AI가 답변할 때 참고할 수 있는 내부 문서를 업로드하세요.<br />
                         PDF, TXT, DOCX, CSV, XLSX 파일을 지원합니다 (최대 50MB).
                       </p>
 
                       {/* 파일 업로드 */}
                       <div className="mb-4">
-                        <label className="flex items-center justify-center w-full px-4 py-8 border-2 border-dashed border-slate-300 rounded-lg hover:border-indigo-400 hover:bg-indigo-50/50 transition-all cursor-pointer">
+                        <label className="flex items-center justify-center w-full px-4 py-8 border-2 border-dashed border-hairline rounded-lg hover:border-graphite hover:bg-mist transition-colors cursor-pointer">
                           <div className="text-center">
-                            <svg className="w-12 h-12 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-12 h-12 text-ash mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
-                            <p className="text-sm font-medium text-slate-700">파일 업로드</p>
-                            <p className="text-xs text-slate-500 mt-1">클릭하여 파일을 선택하세요</p>
+                            <p className="text-sm font-medium text-graphite">파일 업로드</p>
+                            <p className="text-xs text-concrete mt-1">클릭하여 파일을 선택하세요</p>
                           </div>
                           <input
                             type="file"
@@ -2696,33 +2699,33 @@ ${modifyInstructions}
 
                       {/* 업로드된 파일 목록 */}
                       {editingPersona.uploadedFiles && editingPersona.uploadedFiles.length > 0 && (
-                        <div className="border border-slate-200 rounded-lg p-4">
+                        <div className="border border-hairline rounded-lg p-4">
                           <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                            <h4 className="text-sm font-semibold text-graphite flex items-center gap-2">
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                               </svg>
                               업로드된 파일
                             </h4>
-                            <button className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">
+                            <button className="text-xs text-graphite hover:text-carbon font-medium">
                               새로고침
                             </button>
                           </div>
                           <div className="space-y-2 max-h-60 overflow-y-auto">
                             {editingPersona.uploadedFiles.map((file) => (
-                              <div key={file.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                              <div key={file.id} className="flex items-center justify-between p-3 bg-mist rounded-lg">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                                  <svg className="w-8 h-8 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-8 h-8 text-ash flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                   </svg>
                                   <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-slate-700 truncate">{file.name}</p>
-                                    <p className="text-xs text-slate-500">{formatFileSize(file.size)}</p>
+                                    <p className="text-sm font-medium text-graphite truncate">{file.name}</p>
+                                    <p className="text-xs text-concrete">{formatFileSize(file.size)}</p>
                                   </div>
                                 </div>
                                 <button
                                   onClick={() => handleDeleteFile(file.id)}
-                                  className="ml-2 p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+                                  className="ml-2 p-1 text-graphite hover:bg-mist rounded transition-colors"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -2735,8 +2738,8 @@ ${modifyInstructions}
                       )}
 
                       {(!editingPersona.uploadedFiles || editingPersona.uploadedFiles.length === 0) && (
-                        <div className="text-center py-8 text-slate-400">
-                          <svg className="w-16 h-16 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="text-center py-8 text-ash">
+                          <svg className="w-16 h-16 mx-auto mb-2 text-ash" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
                           <p className="text-sm">업로드된 문서가 없습니다</p>
@@ -2750,29 +2753,29 @@ ${modifyInstructions}
                 {/* 자동화 설정 탭 */}
                 {activeTab === 'automation' && (
                   <div className="text-center py-12">
-                    <svg className="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-ash mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h3 className="text-lg font-semibold text-slate-700 mb-2">자동화 설정</h3>
-                    <p className="text-slate-500 text-sm">이 기능은 곧 출시될 예정입니다.</p>
+                    <h3 className="text-lg font-semibold text-graphite mb-2">자동화 설정</h3>
+                    <p className="text-concrete text-sm">이 기능은 곧 출시될 예정입니다.</p>
                   </div>
                 )}
               </div>
 
               {/* 저장 버튼 */}
-              <div className="mt-8 pt-6 border-t border-slate-200">
+              <div className="mt-8 pt-6 border-t border-hairline">
                 <button
                   onClick={handleSavePersona}
-                  className="w-full px-6 py-4 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors font-semibold text-lg shadow-md hover:shadow-lg"
+                  className="w-full px-6 py-4 bg-graphite text-chalk hover:bg-carbon rounded-lg transition-colors font-semibold text-lg"
                 >
                   콘텐츠 설정 업데이트
                 </button>
               </div>
 
               {/* 추가 정보 */}
-              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <h3 className="font-semibold text-red-800 mb-2">위험 구역</h3>
-                <p className="text-sm text-red-700">
+              <div className="mt-6 p-4 bg-mist border border-hairline rounded-lg">
+                <h3 className="font-semibold text-graphite mb-2">위험 구역</h3>
+                <p className="text-sm text-concrete">
                   채널을 중단할 수 있습니다. 신중하게 진행하세요.
                 </p>
               </div>
@@ -2783,21 +2786,21 @@ ${modifyInstructions}
 
       {/* 초안 확인 모달 */}
       {previewMaterial && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-chalk rounded-card w-full max-w-7xl h-[90vh] flex flex-col border border-hairline">
             {/* 헤더 */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-200">
+            <div className="flex items-center justify-between p-6 border-b border-hairline">
               <div className="flex items-center gap-3">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <h2 className="text-2xl font-bold text-slate-800">초안 확인하기</h2>
+                <h2 className="text-2xl font-bold text-graphite">초안 확인하기</h2>
               </div>
               <button
                 onClick={() => setPreviewMaterial(null)}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-mist rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-concrete" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -2806,46 +2809,46 @@ ${modifyInstructions}
             {/* 본문: 2단 레이아웃 */}
             <div className="flex-1 flex overflow-hidden">
               {/* 좌측: 편집 영역 */}
-              <div className="w-1/2 border-r border-slate-200 p-6 overflow-y-auto">
+              <div className="w-1/2 border-r border-hairline p-6 overflow-y-auto">
                 <div className="space-y-6">
                   {/* 1. 제목 */}
                   <div>
-                    <h3 className="text-lg font-bold text-slate-800 mb-3">{previewMaterial.title}</h3>
+                    <h3 className="text-lg font-bold text-graphite mb-3">{previewMaterial.title}</h3>
                   </div>
 
                   {/* 2. 초안 요약 */}
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-3">초안 요약</h4>
+                  <div className="bg-mist rounded-lg p-4 border border-hairline">
+                    <h4 className="text-sm font-semibold text-graphite mb-3">초안 요약</h4>
 
                     <div className="space-y-2 text-sm">
                       <div className="flex items-start gap-2">
-                        <span className="text-slate-500 min-w-[80px]">제목:</span>
-                        <span className="text-slate-800 font-medium">{previewMaterial.title}</span>
+                        <span className="text-concrete min-w-[80px]">제목:</span>
+                        <span className="text-graphite font-medium">{previewMaterial.title}</span>
                       </div>
 
                       <div className="flex items-start gap-2">
-                        <span className="text-slate-500 min-w-[80px]">요약:</span>
-                        <span className="text-slate-700">{previewMaterial.summary}</span>
+                        <span className="text-concrete min-w-[80px]">요약:</span>
+                        <span className="text-graphite">{previewMaterial.summary}</span>
                       </div>
 
                       <div className="flex items-start gap-2">
-                        <span className="text-slate-500 min-w-[80px]">카테고리:</span>
-                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">
+                        <span className="text-concrete min-w-[80px]">카테고리:</span>
+                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-mist text-graphite border border-hairline rounded">
                           {previewMaterial.category}
                         </span>
                       </div>
 
                       <div className="flex items-start gap-2">
-                        <span className="text-slate-500 min-w-[80px]">상태:</span>
-                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded">
+                        <span className="text-concrete min-w-[80px]">상태:</span>
+                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-mist text-graphite border border-hairline rounded">
                           {previewMaterial.status === 'pending' ? '작성 대기중' :
                            previewMaterial.status === 'draft-created' ? '초안 생성됨' : '발행됨'}
                         </span>
                       </div>
 
                       <div className="flex items-start gap-2">
-                        <span className="text-slate-500 min-w-[80px]">생성일:</span>
-                        <span className="text-slate-700">
+                        <span className="text-concrete min-w-[80px]">생성일:</span>
+                        <span className="text-graphite">
                           {new Date(previewMaterial.createdAt).toLocaleDateString('ko-KR', {
                             year: 'numeric',
                             month: 'long',
@@ -2856,7 +2859,7 @@ ${modifyInstructions}
 
                       {previewMaterial.sources && previewMaterial.sources.length > 0 && (
                         <div className="flex items-start gap-2">
-                          <span className="text-slate-500 min-w-[80px]">활용된 지식:</span>
+                          <span className="text-concrete min-w-[80px]">활용된 지식:</span>
                           <div className="flex-1 space-y-1">
                             {previewMaterial.sources.map((source: { uri: string; title: string }, idx: number) => (
                               source.uri && source.uri.startsWith('http') ? (
@@ -2865,13 +2868,13 @@ ${modifyInstructions}
                                   href={source.uri}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="block text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                                  className="block text-xs text-graphite hover:text-carbon hover:underline"
                                   title={source.uri}
                                 >
                                   {source.title}
                                 </a>
                               ) : (
-                                <span key={idx} className="block text-xs text-slate-600" title={source.title}>
+                                <span key={idx} className="block text-xs text-concrete" title={source.title}>
                                   {source.title}
                                 </span>
                               )
@@ -2887,11 +2890,11 @@ ${modifyInstructions}
                     <button
                       onClick={handleRegenerateContent}
                       disabled={isRegeneratingContent}
-                      className="px-4 py-3 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="px-4 py-3 text-sm font-medium bg-graphite text-chalk hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       {isRegeneratingContent ? (
                         <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-4 h-4 border-2 border-chalk border-t-transparent rounded-full animate-spin"></div>
                           생성 중...
                         </>
                       ) : (
@@ -2905,7 +2908,7 @@ ${modifyInstructions}
                     </button>
                     <button
                       onClick={() => setIsModifyModalOpen(true)}
-                      className="px-4 py-3 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors flex items-center justify-center gap-2 border-2 border-dashed border-indigo-300"
+                      className="px-4 py-3 text-sm font-medium text-graphite bg-chalk hover:bg-mist rounded-lg transition-colors flex items-center justify-center gap-2 border-2 border-dashed border-hairline"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -2914,7 +2917,7 @@ ${modifyInstructions}
                     </button>
                     <button
                       onClick={() => setIsPersonaPanelOpen(true)}
-                      className="px-4 py-3 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="px-4 py-3 text-sm font-medium text-graphite bg-mist hover:bg-concrete/10 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -2926,13 +2929,13 @@ ${modifyInstructions}
                   {/* 4. 쓰레드 콘텐츠 영역 - 탭 UI */}
                   <div>
                     {/* 탭 헤더 */}
-                    <div className="flex border-b border-slate-200 mb-4">
+                    <div className="flex border-b border-hairline mb-4">
                       <button
                         onClick={() => setPreviewTab('split')}
                         className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${
                           previewTab === 'split'
-                            ? 'text-indigo-600 border-b-2 border-indigo-600'
-                            : 'text-slate-500 hover:text-slate-700'
+                            ? 'text-graphite border-b-2 border-graphite'
+                            : 'text-concrete hover:text-graphite'
                         }`}
                       >
                         분할 미리보기
@@ -2941,8 +2944,8 @@ ${modifyInstructions}
                         onClick={() => setPreviewTab('full')}
                         className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${
                           previewTab === 'full'
-                            ? 'text-indigo-600 border-b-2 border-indigo-600'
-                            : 'text-slate-500 hover:text-slate-700'
+                            ? 'text-graphite border-b-2 border-graphite'
+                            : 'text-concrete hover:text-graphite'
                         }`}
                       >
                         전체 보기
@@ -2966,10 +2969,10 @@ ${modifyInstructions}
                           }}
                           rows={12}
                           placeholder="AI가 생성한 쓰레드 콘텐츠가 여기에 표시됩니다..."
-                          className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg leading-relaxed resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full px-4 py-3 border border-hairline rounded-lg leading-relaxed resize-none focus:ring-2 focus:ring-graphite focus:border-graphite"
                         />
                         <div className="flex justify-between mt-2">
-                          <span className="text-xs text-slate-500">
+                          <span className="text-xs text-concrete">
                             {(previewMaterial.draftContent || '').length} 글자
                           </span>
                         </div>
@@ -2980,33 +2983,33 @@ ${modifyInstructions}
                         <div className="flex justify-end mb-2">
                           <button
                             onClick={handleAutoSplit}
-                            className="px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded-lg transition-colors"
                           >
                             자동 분할
                           </button>
                         </div>
 
                         {editingThreadParts.map((part, index) => (
-                          <div key={index} className="bg-white rounded-lg border-2 border-slate-200 overflow-hidden">
+                          <div key={index} className="bg-chalk rounded-lg border border-hairline overflow-hidden">
                             {/* 헤더 */}
-                            <div className="flex items-center justify-between px-3 py-2 bg-slate-50 border-b border-slate-200">
+                            <div className="flex items-center justify-between px-3 py-2 bg-mist border-b border-hairline">
                               <div className="flex items-center gap-2">
                                 {index === 0 ? (
                                   <>
-                                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-4 h-4 text-graphite" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                     </svg>
-                                    <span className="text-xs font-bold text-blue-600">메인 포스트</span>
+                                    <span className="text-xs font-bold text-graphite">메인 포스트</span>
                                   </>
                                 ) : (
                                   <>
-                                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-4 h-4 text-concrete" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
-                                    <span className="text-xs font-bold text-green-600">댓글 {index}</span>
+                                    <span className="text-xs font-bold text-concrete">댓글 {index}</span>
                                   </>
                                 )}
-                                <span className="text-xs text-slate-500">({part.length}/500자)</span>
+                                <span className="text-xs text-concrete">({part.length}/500자)</span>
                               </div>
 
                               {/* 편집 버튼 */}
@@ -3014,7 +3017,7 @@ ${modifyInstructions}
                                 {index > 0 && (
                                   <button
                                     onClick={() => handleMoveThreadPartUp(index)}
-                                    className="p-1 text-slate-500 hover:text-slate-700 hover:bg-slate-200 rounded"
+                                    className="p-1 text-concrete hover:text-graphite hover:bg-mist rounded"
                                     title="위로"
                                   >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3025,7 +3028,7 @@ ${modifyInstructions}
                                 {index < editingThreadParts.length - 1 && (
                                   <button
                                     onClick={() => handleMoveThreadPartDown(index)}
-                                    className="p-1 text-slate-500 hover:text-slate-700 hover:bg-slate-200 rounded"
+                                    className="p-1 text-concrete hover:text-graphite hover:bg-mist rounded"
                                     title="아래로"
                                   >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3036,7 +3039,7 @@ ${modifyInstructions}
                                 {editingThreadParts.length > 1 && (
                                   <button
                                     onClick={() => handleDeleteThreadPart(index)}
-                                    className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                                    className="p-1 text-graphite hover:text-carbon hover:bg-mist rounded"
                                     title="삭제"
                                   >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3052,13 +3055,13 @@ ${modifyInstructions}
                               value={part}
                               onChange={(e) => handleUpdateThreadPart(index, e.target.value)}
                               rows={3}
-                              className="w-full px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="w-full px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-graphite"
                               placeholder="포스트 내용을 입력하세요..."
                             />
                           </div>
                         ))}
 
-                        <div className="text-center text-xs text-slate-500 mt-2">
+                        <div className="text-center text-xs text-concrete mt-2">
                           총 {editingThreadParts.length}개 포스트 (메인 1개 + 댓글 {editingThreadParts.length - 1}개)
                         </div>
                       </div>
@@ -3066,12 +3069,12 @@ ${modifyInstructions}
                   </div>
 
                   {/* 하단 버튼 */}
-                  <div className="flex flex-col gap-3 pt-4 border-t border-slate-200">
+                  <div className="flex flex-col gap-3 pt-4 border-t border-hairline">
                     <div className="flex gap-3">
                       <button
                         onClick={handleSaveDraft}
                         disabled={isPosting}
-                        className="flex-1 px-6 py-3 text-slate-700 bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3 text-graphite bg-mist hover:bg-concrete/10 disabled:bg-ash disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
@@ -3081,7 +3084,7 @@ ${modifyInstructions}
                       <button
                         onClick={handleOpenScheduleModal}
                         disabled={isPosting}
-                        className="flex-1 px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3 text-graphite border border-hairline bg-chalk hover:bg-mist disabled:bg-ash disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -3091,11 +3094,11 @@ ${modifyInstructions}
                       <button
                         onClick={handleImmediatePost}
                         disabled={isPosting}
-                        className="flex-1 px-6 py-3 text-white bg-green-600 hover:bg-green-700 disabled:bg-green-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3 text-chalk bg-graphite hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                       >
                         {isPosting ? (
                           <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-5 h-5 border-2 border-chalk border-t-transparent rounded-full animate-spin"></div>
                             포스팅 중...
                           </>
                         ) : (
@@ -3110,7 +3113,7 @@ ${modifyInstructions}
                     </div>
                     <button
                       onClick={() => setPreviewMaterial(null)}
-                      className="w-full px-6 py-3 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition-colors"
+                      className="w-full px-6 py-3 text-graphite bg-mist hover:bg-concrete/10 rounded-lg font-medium transition-colors"
                     >
                       닫기
                     </button>
@@ -3119,25 +3122,25 @@ ${modifyInstructions}
               </div>
 
               {/* 우측: 모바일 프레임 미리보기 */}
-              <div className="w-1/2 p-6 bg-slate-50 flex items-center justify-center">
-                <div className="relative w-[360px] h-[680px] bg-black rounded-[3rem] shadow-2xl overflow-hidden border-[6px] border-slate-800">
+              <div className="w-1/2 p-6 bg-mist flex items-center justify-center">
+                <div className="relative w-[360px] h-[680px] bg-carbon rounded-card overflow-hidden border-[6px] border-carbon">
                   {/* 노치 */}
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-7 bg-black rounded-b-3xl z-10"></div>
+                  <div className="absolute top-0 left-1/2 w-40 h-7 bg-carbon rounded-b-card z-10"></div>
 
                   {/* 스크린 */}
-                  <div className="h-full bg-white overflow-y-auto">
+                  <div className="h-full bg-chalk overflow-y-auto">
                     {/* Threads 헤더 */}
-                    <div className="sticky top-0 bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between z-10">
+                    <div className="sticky top-0 bg-chalk border-b border-hairline px-4 py-3 flex items-center justify-between z-10">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 bg-graphite rounded-full flex items-center justify-center text-chalk font-bold">
                           기억
                         </div>
                         <div>
                           <div className="font-bold text-sm">memory.drawer25</div>
-                          <div className="text-xs text-slate-500">· 기억의 서랍</div>
+                          <div className="text-xs text-concrete">· 기억의 서랍</div>
                         </div>
                       </div>
-                      <button className="text-slate-600">
+                      <button className="text-concrete">
                         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                         </svg>
@@ -3150,11 +3153,11 @@ ${modifyInstructions}
                         /* 분할 미리보기: 스레드 형식 */
                         <>
                           {editingThreadParts.map((part, index) => (
-                            <div key={index} className={index > 0 ? "ml-8 border-l-2 border-slate-200 pl-4" : ""}>
+                            <div key={index} className={index > 0 ? "ml-8 border-l-2 border-hairline pl-4" : ""}>
                               {/* 메인 포스트 헤더 */}
                               {index === 0 && (
                                 <div className="flex items-center gap-3 mb-2">
-                                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                  <div className="w-8 h-8 bg-graphite rounded-full flex items-center justify-center text-chalk text-xs font-bold">
                                     기
                                   </div>
                                   <div>
@@ -3164,25 +3167,25 @@ ${modifyInstructions}
                               )}
 
                               {/* 포스트 내용 */}
-                              <div className="text-sm leading-relaxed whitespace-pre-wrap text-slate-800 mb-3">
+                              <div className="text-sm leading-relaxed whitespace-pre-wrap text-graphite mb-3">
                                 {part || '콘텐츠를 생성해주세요.'}
                               </div>
 
                               {/* 인터랙션 바 */}
-                              <div className="flex items-center gap-4 text-slate-500">
-                                <button className="flex items-center gap-1 hover:text-slate-700">
+                              <div className="flex items-center gap-4 text-concrete">
+                                <button className="flex items-center gap-1 hover:text-graphite">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                   </svg>
                                   <span className="text-xs">0</span>
                                 </button>
-                                <button className="flex items-center gap-1 hover:text-slate-700">
+                                <button className="flex items-center gap-1 hover:text-graphite">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                   </svg>
                                   <span className="text-xs">{index === 0 ? editingThreadParts.length - 1 : 0}</span>
                                 </button>
-                                <button className="flex items-center gap-1 hover:text-slate-700">
+                                <button className="flex items-center gap-1 hover:text-graphite">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                   </svg>
@@ -3195,31 +3198,31 @@ ${modifyInstructions}
                         /* 전체 보기: 단일 포스트 */
                         <>
                           <h2 className="font-bold text-lg mb-3">{previewMaterial.title}</h2>
-                          <div className="text-sm leading-relaxed whitespace-pre-wrap text-slate-800">
+                          <div className="text-sm leading-relaxed whitespace-pre-wrap text-graphite">
                             {previewMaterial.draftContent || '콘텐츠를 생성해주세요.'}
                           </div>
 
                           {/* 인터랙션 바 */}
-                          <div className="flex items-center gap-6 mt-6 pt-4 border-t border-slate-200 text-slate-600">
-                            <button className="flex items-center gap-2 hover:text-slate-800">
+                          <div className="flex items-center gap-6 mt-6 pt-4 border-t border-hairline text-concrete">
+                            <button className="flex items-center gap-2 hover:text-graphite">
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                               </svg>
                               <span className="text-xs">0</span>
                             </button>
-                            <button className="flex items-center gap-2 hover:text-slate-800">
+                            <button className="flex items-center gap-2 hover:text-graphite">
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                               </svg>
                               <span className="text-xs">0</span>
                             </button>
-                            <button className="flex items-center gap-2 hover:text-slate-800">
+                            <button className="flex items-center gap-2 hover:text-graphite">
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                               </svg>
                               <span className="text-xs">0</span>
                             </button>
-                            <button className="flex items-center gap-2 hover:text-slate-800">
+                            <button className="flex items-center gap-2 hover:text-graphite">
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                               </svg>
@@ -3239,18 +3242,18 @@ ${modifyInstructions}
       {/* AI 수정 지시사항 입력 모달 */}
       {isModifyModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-chalk rounded-card border border-hairline max-w-2xl w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6">
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200">
-                <h3 className="text-xl font-bold text-slate-800">AI로 수정하기</h3>
+              <div className="flex items-center justify-between mb-4 pb-4 border-b border-hairline">
+                <h3 className="text-xl font-bold text-graphite">AI로 수정하기</h3>
                 <button
                   onClick={() => {
                     setIsModifyModalOpen(false);
                     setModifyInstructions('');
                   }}
-                  className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-mist rounded-lg transition-colors"
                 >
-                  <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-concrete" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -3258,7 +3261,7 @@ ${modifyInstructions}
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="block text-sm font-semibold text-graphite mb-2">
                     수정 지시사항
                   </label>
                   <textarea
@@ -3266,9 +3269,9 @@ ${modifyInstructions}
                     onChange={(e) => setModifyInstructions(e.target.value)}
                     rows={6}
                     placeholder="예: 첫 문장을 더 강렬하게 수정해주세요&#10;예: 전문용어를 쉬운 말로 바꿔주세요&#10;예: 이모지를 더 추가해주세요"
-                    className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-4 py-3 border border-hairline rounded-lg resize-none focus:ring-2 focus:ring-graphite focus:border-graphite"
                   />
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-concrete mt-1">
                     AI에게 어떻게 수정할지 구체적으로 알려주세요
                   </p>
                 </div>
@@ -3279,18 +3282,18 @@ ${modifyInstructions}
                       setIsModifyModalOpen(false);
                       setModifyInstructions('');
                     }}
-                    className="flex-1 px-6 py-3 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition-colors"
+                    className="flex-1 px-6 py-3 text-graphite bg-mist hover:bg-concrete/10 rounded-lg font-medium transition-colors"
                   >
                     취소
                   </button>
                   <button
                     onClick={handleModifyContent}
                     disabled={isModifying || !modifyInstructions.trim()}
-                    className="flex-1 px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 px-6 py-3 text-chalk bg-graphite hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                   >
                     {isModifying ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-4 h-4 border-2 border-chalk border-t-transparent rounded-full animate-spin"></div>
                         수정 중...
                       </>
                     ) : (
@@ -3307,20 +3310,20 @@ ${modifyInstructions}
       {/* 예약 포스팅 날짜/시간 선택 모달 */}
       {isScheduleModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+          <div className="bg-chalk rounded-card border border-hairline max-w-md w-full">
             <div className="p-6">
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200">
+              <div className="flex items-center justify-between mb-4 pb-4 border-b border-hairline">
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <h3 className="text-xl font-bold text-slate-800">예약 포스팅 설정</h3>
+                  <h3 className="text-xl font-bold text-graphite">예약 포스팅 설정</h3>
                 </div>
                 <button
                   onClick={() => setIsScheduleModalOpen(false)}
-                  className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-mist rounded-lg transition-colors"
                 >
-                  <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-concrete" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -3328,27 +3331,27 @@ ${modifyInstructions}
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="block text-sm font-semibold text-graphite mb-2">
                     포스팅 예약 일시
                   </label>
                   <input
                     type="datetime-local"
                     value={scheduledDateTime}
                     onChange={(e) => setScheduledDateTime(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-graphite"
                   />
-                  <p className="mt-2 text-xs text-slate-500">
+                  <p className="mt-2 text-xs text-concrete">
                     ⏰ 한국 시간(KST) 기준으로 선택한 시간에 자동으로 Threads에 포스팅됩니다.
                   </p>
                 </div>
 
                 {previewMaterial && (
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">예약 내용</h4>
-                    <p className="text-sm text-slate-600 mb-1">
+                  <div className="bg-mist rounded-lg p-4 border border-hairline">
+                    <h4 className="text-sm font-semibold text-graphite mb-2">예약 내용</h4>
+                    <p className="text-sm text-concrete mb-1">
                       <span className="font-medium">제목:</span> {previewMaterial.title}
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-concrete">
                       <span className="font-medium">카테고리:</span> {previewMaterial.category}
                     </p>
                   </div>
@@ -3358,13 +3361,13 @@ ${modifyInstructions}
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setIsScheduleModalOpen(false)}
-                  className="flex-1 px-6 py-3 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition-colors"
+                  className="flex-1 px-6 py-3 text-graphite bg-mist hover:bg-concrete/10 rounded-lg font-medium transition-colors"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleConfirmScheduledPost}
-                  className="flex-1 px-6 py-3 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-colors"
+                  className="flex-1 px-6 py-3 text-chalk bg-graphite hover:bg-carbon rounded-lg font-medium transition-colors"
                 >
                   예약 확정
                 </button>
@@ -3377,14 +3380,14 @@ ${modifyInstructions}
       {/* 콘텐츠 인사이트 모달 */}
       {insightsModalOpen && selectedInsightsMaterial && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-chalk rounded-card border border-hairline max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             {/* 헤더 */}
-            <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between">
+            <div className="sticky top-0 bg-chalk border-b border-hairline p-6 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <h3 className="text-xl font-bold text-slate-800">콘텐츠 인사이트</h3>
+                <h3 className="text-xl font-bold text-graphite">콘텐츠 인사이트</h3>
               </div>
               <button
                 onClick={() => {
@@ -3392,9 +3395,9 @@ ${modifyInstructions}
                   setSelectedInsightsMaterial(null);
                   setInsightsData(null);
                 }}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-mist rounded-lg transition-colors"
               >
-                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-concrete" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -3403,11 +3406,11 @@ ${modifyInstructions}
             {/* 본문 */}
             <div className="p-6 space-y-6">
               {/* 콘텐츠 정보 */}
-              <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                <h4 className="text-lg font-bold text-slate-800 mb-3">{selectedInsightsMaterial.title}</h4>
+              <div className="bg-mist rounded-lg p-4 border border-hairline">
+                <h4 className="text-lg font-bold text-graphite mb-3">{selectedInsightsMaterial.title}</h4>
 
                 {selectedInsightsMaterial.publishDate && (
-                  <div className="flex items-center gap-2 text-sm text-slate-600 mb-3">
+                  <div className="flex items-center gap-2 text-sm text-concrete mb-3">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -3421,110 +3424,110 @@ ${modifyInstructions}
                   </div>
                 )}
 
-                <div className="text-sm text-slate-700 whitespace-pre-wrap">
+                <div className="text-sm text-graphite whitespace-pre-wrap">
                   {selectedInsightsMaterial.draftContent || selectedInsightsMaterial.summary}
                 </div>
               </div>
 
               {/* 인사이트 데이터 */}
               <div>
-                <h5 className="text-md font-semibold text-slate-800 mb-4">포스팅 성과</h5>
+                <h5 className="text-md font-semibold text-graphite mb-4">포스팅 성과</h5>
 
                 {isLoadingInsights ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="text-center">
-                      <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                      <p className="text-sm text-slate-600">인사이트를 불러오는 중...</p>
+                      <div className="w-12 h-12 border-4 border-graphite border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                      <p className="text-sm text-concrete">인사이트를 불러오는 중...</p>
                     </div>
                   </div>
                 ) : insightsData ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {/* 조회수 */}
                     {insightsData.views !== undefined && (
-                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <div className="bg-mist rounded-lg p-4 border border-hairline">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
-                          <span className="text-xs font-medium text-blue-700">조회수</span>
+                          <span className="text-xs font-medium text-concrete">조회수</span>
                         </div>
-                        <p className="text-2xl font-bold text-blue-900">{insightsData.views.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-graphite">{insightsData.views.toLocaleString()}</p>
                       </div>
                     )}
 
                     {/* 좋아요 */}
                     {insightsData.likes !== undefined && (
-                      <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
+                      <div className="bg-mist rounded-lg p-4 border border-hairline">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                           </svg>
-                          <span className="text-xs font-medium text-pink-700">좋아요</span>
+                          <span className="text-xs font-medium text-concrete">좋아요</span>
                         </div>
-                        <p className="text-2xl font-bold text-pink-900">{insightsData.likes.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-graphite">{insightsData.likes.toLocaleString()}</p>
                       </div>
                     )}
 
                     {/* 댓글 */}
                     {insightsData.replies !== undefined && (
-                      <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                      <div className="bg-mist rounded-lg p-4 border border-hairline">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                           </svg>
-                          <span className="text-xs font-medium text-green-700">댓글</span>
+                          <span className="text-xs font-medium text-concrete">댓글</span>
                         </div>
-                        <p className="text-2xl font-bold text-green-900">{insightsData.replies.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-graphite">{insightsData.replies.toLocaleString()}</p>
                       </div>
                     )}
 
                     {/* 리포스트 */}
                     {insightsData.reposts !== undefined && (
-                      <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                      <div className="bg-mist rounded-lg p-4 border border-hairline">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                           </svg>
-                          <span className="text-xs font-medium text-purple-700">리포스트</span>
+                          <span className="text-xs font-medium text-concrete">리포스트</span>
                         </div>
-                        <p className="text-2xl font-bold text-purple-900">{insightsData.reposts.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-graphite">{insightsData.reposts.toLocaleString()}</p>
                       </div>
                     )}
 
                     {/* 인용 */}
                     {insightsData.quotes !== undefined && (
-                      <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                      <div className="bg-mist rounded-lg p-4 border border-hairline">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                           </svg>
-                          <span className="text-xs font-medium text-amber-700">인용</span>
+                          <span className="text-xs font-medium text-concrete">인용</span>
                         </div>
-                        <p className="text-2xl font-bold text-amber-900">{insightsData.quotes.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-graphite">{insightsData.quotes.toLocaleString()}</p>
                       </div>
                     )}
 
                     {/* 도달 */}
                     {insightsData.reach !== undefined && (
-                      <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                      <div className="bg-mist rounded-lg p-4 border border-hairline">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
-                          <span className="text-xs font-medium text-indigo-700">도달</span>
+                          <span className="text-xs font-medium text-concrete">도달</span>
                         </div>
-                        <p className="text-2xl font-bold text-indigo-900">{insightsData.reach.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-graphite">{insightsData.reach.toLocaleString()}</p>
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <svg className="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-ash mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p className="text-sm text-slate-600 mb-1">인사이트 데이터를 불러올 수 없습니다</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-sm text-concrete mb-1">인사이트 데이터를 불러올 수 없습니다</p>
+                    <p className="text-xs text-concrete">
                       포스트 ID가 없거나 아직 인사이트가 생성되지 않았을 수 있습니다.
                     </p>
                   </div>
@@ -3532,14 +3535,14 @@ ${modifyInstructions}
               </div>
 
               {/* 닫기 버튼 */}
-              <div className="pt-4 border-t border-slate-200">
+              <div className="pt-4 border-t border-hairline">
                 <button
                   onClick={() => {
                     setInsightsModalOpen(false);
                     setSelectedInsightsMaterial(null);
                     setInsightsData(null);
                   }}
-                  className="w-full px-6 py-3 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition-colors"
+                  className="w-full px-6 py-3 text-graphite bg-mist hover:bg-concrete/10 rounded-lg font-medium transition-colors"
                 >
                   닫기
                 </button>

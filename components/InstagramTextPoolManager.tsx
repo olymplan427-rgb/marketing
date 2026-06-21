@@ -200,23 +200,23 @@ const InstagramTextPoolManager: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 lg:p-8">
+    <div className="min-h-screen bg-chalk text-graphite p-4 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">📝 텍스트 풀 관리</h1>
-          <p className="text-gray-400">인스타그램 포스트에 사용할 질문 텍스트를 관리합니다</p>
+          <p className="text-concrete">인스타그램 포스트에 사용할 질문 텍스트를 관리합니다</p>
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="mb-4 bg-red-500/20 text-red-300 p-4 rounded-lg">
+          <div className="mb-4 bg-mist border border-hairline text-graphite p-4 rounded-lg">
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold mb-1">오류 발생</h3>
                 <p className="text-sm">{error}</p>
               </div>
-              <button onClick={() => setError(null)} className="text-red-300 hover:text-white">
+              <button onClick={() => setError(null)} className="text-concrete hover:text-graphite">
                 ×
               </button>
             </div>
@@ -225,33 +225,33 @@ const InstagramTextPoolManager: React.FC = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-indigo-400">{stats.total}</div>
-            <div className="text-sm text-gray-400">전체</div>
+          <div className="bg-mist p-4 rounded-card border border-hairline">
+            <div className="text-2xl font-bold text-graphite">{stats.total}</div>
+            <div className="text-sm text-concrete">전체</div>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-green-400">{stats.unused}</div>
-            <div className="text-sm text-gray-400">미사용</div>
+          <div className="bg-mist p-4 rounded-card border border-hairline">
+            <div className="text-2xl font-bold text-graphite">{stats.unused}</div>
+            <div className="text-sm text-concrete">미사용</div>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-gray-400">{stats.used}</div>
-            <div className="text-sm text-gray-400">사용됨</div>
+          <div className="bg-mist p-4 rounded-card border border-hairline">
+            <div className="text-2xl font-bold text-concrete">{stats.used}</div>
+            <div className="text-sm text-concrete">사용됨</div>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <div className="text-2xl font-bold text-purple-400">{stats.aiGenerated}</div>
-            <div className="text-sm text-gray-400">AI 생성</div>
+          <div className="bg-mist p-4 rounded-card border border-hairline">
+            <div className="text-2xl font-bold text-graphite">{stats.aiGenerated}</div>
+            <div className="text-sm text-concrete">AI 생성</div>
           </div>
         </div>
 
         {/* Filters & Actions */}
-        <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 mb-6">
+        <div className="bg-mist p-4 rounded-card border border-hairline mb-6">
           <div className="flex flex-wrap gap-4 items-center justify-between">
             <div className="flex flex-wrap gap-3">
               {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm"
+                className="px-3 py-2 bg-chalk border border-hairline text-graphite rounded-lg text-sm"
               >
                 <option value="">모든 카테고리</option>
                 {categories.map(cat => (
@@ -266,7 +266,7 @@ const InstagramTextPoolManager: React.FC = () => {
                   const val = e.target.value;
                   setFilterUsed(val === '' ? undefined : val === 'true');
                 }}
-                className="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm"
+                className="px-3 py-2 bg-chalk border border-hairline text-graphite rounded-lg text-sm"
               >
                 <option value="">전체</option>
                 <option value="false">미사용만</option>
@@ -276,7 +276,7 @@ const InstagramTextPoolManager: React.FC = () => {
               <button
                 onClick={handleGetRandom}
                 disabled={loading}
-                className="px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded text-sm disabled:opacity-50"
+                className="px-3 py-2 border border-hairline bg-chalk text-graphite hover:bg-mist rounded-lg text-sm transition-colors disabled:opacity-50"
               >
                 🎲 랜덤 선택
               </button>
@@ -295,7 +295,7 @@ const InstagramTextPoolManager: React.FC = () => {
                   prompt: ''
                 });
               }}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-sm"
+              className="px-4 py-2 bg-graphite text-chalk hover:bg-carbon rounded-lg text-sm transition-colors"
             >
               + 새 텍스트 추가
             </button>
@@ -304,33 +304,33 @@ const InstagramTextPoolManager: React.FC = () => {
 
         {/* Add/Edit Form */}
         {showAddForm && (
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 mb-6">
+          <div className="bg-mist p-6 rounded-card border border-hairline mb-6">
             <h3 className="text-lg font-semibold mb-4">
               {editingId ? '텍스트 수정' : '새 텍스트 추가'}
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-graphite mb-2">
                   질문 텍스트 *
                 </label>
                 <textarea
                   value={formData.text}
                   onChange={(e) => setFormData({ ...formData, text: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
+                  className="w-full px-3 py-2 bg-chalk border border-hairline rounded-lg text-graphite"
                   rows={3}
                   placeholder="예: 오늘 하루 중 가장 기억에 남는 순간은?"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-graphite mb-2">
                   캡션 (선택사항)
                 </label>
                 <textarea
                   value={formData.caption}
                   onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
+                  className="w-full px-3 py-2 bg-chalk border border-hairline rounded-lg text-graphite"
                   rows={2}
                   placeholder="인스타그램 포스트 캡션"
                 />
@@ -338,20 +338,20 @@ const InstagramTextPoolManager: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-graphite mb-2">
                     카테고리
                   </label>
                   <input
                     type="text"
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
+                    className="w-full px-3 py-2 bg-chalk border border-hairline rounded-lg text-graphite"
                     placeholder="예: 자기성찰"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-graphite mb-2">
                     AI 생성 여부
                   </label>
                   <label className="flex items-center gap-2 px-3 py-2">
@@ -370,7 +370,7 @@ const InstagramTextPoolManager: React.FC = () => {
                 <button
                   onClick={editingId ? handleUpdate : handleAdd}
                   disabled={loading || !formData.text.trim()}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded disabled:opacity-50"
+                  className="px-4 py-2 bg-graphite text-chalk hover:bg-carbon rounded-lg transition-colors disabled:bg-ash disabled:cursor-not-allowed"
                 >
                   {loading ? '처리 중...' : editingId ? '수정' : '추가'}
                 </button>
@@ -387,7 +387,7 @@ const InstagramTextPoolManager: React.FC = () => {
                       prompt: ''
                     });
                   }}
-                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded"
+                  className="px-4 py-2 border border-hairline bg-chalk text-graphite hover:bg-mist rounded-lg transition-colors"
                 >
                   취소
                 </button>
@@ -399,17 +399,17 @@ const InstagramTextPoolManager: React.FC = () => {
         {/* Text List */}
         <div className="space-y-3">
           {loading && texts.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">
+            <div className="text-center py-12 text-concrete">
               <div className="animate-spin text-4xl mb-4">⏳</div>
               <p>로딩 중...</p>
             </div>
           ) : texts.length === 0 ? (
-            <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
+            <div className="text-center py-12 bg-mist rounded-card border border-hairline">
               <div className="text-4xl mb-4">📝</div>
-              <p className="text-gray-400 mb-4">텍스트 풀이 비어있습니다</p>
+              <p className="text-concrete mb-4">텍스트 풀이 비어있습니다</p>
               <button
                 onClick={() => setShowAddForm(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded"
+                className="px-4 py-2 bg-graphite text-chalk hover:bg-carbon rounded-lg transition-colors"
               >
                 첫 텍스트 추가하기
               </button>
@@ -418,37 +418,37 @@ const InstagramTextPoolManager: React.FC = () => {
             texts.map((text) => (
               <div
                 key={text.id}
-                className={`bg-gray-800 p-4 rounded-lg border ${
-                  text.is_used ? 'border-gray-700 opacity-60' : 'border-gray-700'
+                className={`bg-mist p-4 rounded-card border ${
+                  text.is_used ? 'border-hairline opacity-60' : 'border-hairline'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       {text.is_used && (
-                        <span className="px-2 py-0.5 bg-gray-700 text-gray-400 text-xs rounded">
+                        <span className="px-2 py-0.5 bg-chalk border border-hairline text-concrete text-xs rounded-full">
                           사용됨
                         </span>
                       )}
                       {text.ai_generated && (
-                        <span className="px-2 py-0.5 bg-purple-900/50 text-purple-300 text-xs rounded">
+                        <span className="px-2 py-0.5 bg-chalk border border-hairline text-graphite text-xs rounded-full">
                           AI 생성
                         </span>
                       )}
                       {text.category && (
-                        <span className="px-2 py-0.5 bg-indigo-900/50 text-indigo-300 text-xs rounded">
+                        <span className="px-2 py-0.5 bg-chalk border border-hairline text-graphite text-xs rounded-full">
                           {text.category}
                         </span>
                       )}
                     </div>
 
-                    <p className="text-white mb-2">{text.text}</p>
+                    <p className="text-graphite mb-2">{text.text}</p>
 
                     {text.caption && (
-                      <p className="text-sm text-gray-400 mb-2">캡션: {text.caption}</p>
+                      <p className="text-sm text-concrete mb-2">캡션: {text.caption}</p>
                     )}
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-ash">
                       생성: {new Date(text.created_at!).toLocaleDateString('ko-KR')}
                       {text.used_at && ` | 사용: ${new Date(text.used_at).toLocaleDateString('ko-KR')}`}
                     </p>
@@ -459,13 +459,13 @@ const InstagramTextPoolManager: React.FC = () => {
                       <>
                         <button
                           onClick={() => startEdit(text)}
-                          className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm"
+                          className="px-3 py-1 border border-hairline bg-chalk text-graphite hover:bg-mist rounded-lg text-sm transition-colors"
                         >
                           ✏️
                         </button>
                         <button
                           onClick={() => handleMarkAsUsed(text.id!)}
-                          className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-sm"
+                          className="px-3 py-1 bg-graphite text-chalk hover:bg-carbon rounded-lg text-sm transition-colors"
                         >
                           ✓
                         </button>
@@ -473,7 +473,7 @@ const InstagramTextPoolManager: React.FC = () => {
                     )}
                     <button
                       onClick={() => handleDelete(text.id!)}
-                      className="px-3 py-1 bg-red-700 hover:bg-red-600 rounded text-sm"
+                      className="px-3 py-1 border border-hairline bg-chalk text-graphite hover:bg-mist rounded-lg text-sm transition-colors"
                     >
                       🗑️
                     </button>

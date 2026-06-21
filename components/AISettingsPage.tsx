@@ -74,21 +74,21 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
         <div className="max-w-5xl mx-auto">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">AI 모델 설정</h1>
-                <p className="text-slate-600 dark:text-slate-400">사용할 AI 모델과 API 키를 설정하세요</p>
+                <h1 className="text-3xl font-bold text-graphite mb-2">AI 모델 설정</h1>
+                <p className="text-concrete">사용할 AI 모델과 API 키를 설정하세요</p>
             </div>
 
             {/* Success Notification */}
             {showSaveNotification && (
-                <div className="mb-6 bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 dark:border-green-400 text-green-700 dark:text-green-300 p-4 rounded-md animate-slideIn">
+                <div className="mb-6 bg-mist border-l-4 border-graphite text-graphite p-4 rounded-lg animate-slideIn">
                     <p className="font-medium">✓ 설정이 저장되었습니다!</p>
                 </div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left Side: Model Selection */}
-                <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border border-white/30 dark:border-slate-700/50 rounded-2xl shadow-xl p-8">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-6">AI 모델 선택</h2>
+                <div className="bg-chalk border border-hairline rounded-card p-8">
+                    <h2 className="text-xl font-semibold text-graphite mb-6">AI 모델 선택</h2>
 
                     <div className="space-y-4 mb-8">
                         {(Object.keys(PROVIDER_CONFIG) as AIProvider[]).map((providerKey) => {
@@ -97,16 +97,16 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                             return (
                                 <label
                                     key={providerKey}
-                                    className={`relative block p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                                    className={`relative block p-5 rounded-card border-2 cursor-pointer transition-colors ${
                                         isSelected
-                                            ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 dark:border-indigo-400 shadow-md'
-                                            : 'bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm'
+                                            ? 'bg-mist border-graphite'
+                                            : 'bg-mist border-hairline hover:border-concrete'
                                     }`}
                                 >
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
-                                            <span className="font-bold text-lg text-slate-800 dark:text-slate-100">{provider.name}</span>
-                                            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{provider.description}</p>
+                                            <span className="font-bold text-lg text-graphite">{provider.name}</span>
+                                            <p className="text-sm text-concrete mt-1">{provider.description}</p>
                                         </div>
                                         <div className="flex-shrink-0 ml-4 mt-1">
                                             <input
@@ -119,11 +119,11 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                                             />
                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                                                 isSelected
-                                                    ? 'bg-indigo-500 dark:bg-indigo-400 border-indigo-400 dark:border-indigo-300'
-                                                    : 'bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600'
+                                                    ? 'bg-graphite border-graphite'
+                                                    : 'bg-chalk border-hairline'
                                             }`}>
                                                 {isSelected && (
-                                                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
+                                                    <svg className="w-3 h-3 text-chalk" fill="currentColor" viewBox="0 0 12 12">
                                                         <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
                                                     </svg>
                                                 )}
@@ -137,14 +137,14 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
 
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="sub-model" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                            <label htmlFor="sub-model" className="block text-sm font-medium text-graphite mb-2">
                                 세부 모델
                             </label>
                             <select
                                 id="sub-model"
                                 value={selectedSubModels[activeProvider]}
                                 onChange={(e) => setSelectedSubModels({ ...selectedSubModels, [activeProvider]: e.target.value })}
-                                className="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:outline-none"
+                                className="w-full px-4 py-3 bg-chalk text-graphite border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:outline-none"
                             >
                                 {SUB_MODEL_CONFIG[activeProvider].models.map(model => (
                                     <option key={model.value} value={model.value}>{model.display}</option>
@@ -153,13 +153,13 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                         </div>
 
                         <div>
-                            <label htmlFor="api-key" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex justify-between items-center">
-                                <span>{currentProviderConfig.name} API Key <span className="text-red-500 dark:text-red-400">*</span></span>
+                            <label htmlFor="api-key" className="block text-sm font-medium text-graphite mb-2 flex justify-between items-center">
+                                <span>{currentProviderConfig.name} API Key <span className="text-graphite">*</span></span>
                                 <a
                                     href={currentProviderConfig.keyUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 underline"
+                                    className="text-xs text-graphite hover:text-carbon underline"
                                 >
                                     API 키 발급받기
                                 </a>
@@ -171,14 +171,14 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                                 onChange={(e) => handleApiKeyChange(activeProvider, e.target.value)}
                                 placeholder={currentProviderConfig.keyPlaceholder}
                                 required
-                                className="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:outline-none placeholder-slate-400 dark:placeholder-slate-500"
+                                className="w-full px-4 py-3 bg-chalk text-graphite border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:outline-none placeholder-ash"
                             />
                         </div>
                     </div>
 
                     <button
                         onClick={handleSave}
-                        className="mt-8 w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/30 hover:from-indigo-700 hover:to-purple-700 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
+                        className="mt-8 w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-chalk bg-graphite rounded-lg hover:bg-carbon transition-colors disabled:bg-ash disabled:cursor-not-allowed"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -188,9 +188,9 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                 </div>
 
                 {/* Right Side: Guide */}
-                <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border border-white/30 dark:border-slate-700/50 rounded-2xl shadow-xl p-8">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                        <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-chalk border border-hairline rounded-card p-8">
+                    <h2 className="text-xl font-semibold text-graphite mb-4 flex items-center gap-2">
+                        <svg className="w-6 h-6 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         API 키 발급 가이드
@@ -201,29 +201,29 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                             href={currentProviderConfig.keyUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all duration-200 transform hover:scale-[1.02]"
+                            className="block w-full text-center bg-graphite hover:bg-carbon text-chalk font-semibold py-3 px-4 rounded-lg transition-colors"
                         >
                             {currentProviderConfig.keyPageName}
                         </a>
 
-                        <div className="bg-amber-50 dark:bg-amber-900/30 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-r-lg">
+                        <div className="bg-mist border-l-4 border-graphite p-4 rounded-r-lg">
                             <div className="flex">
                                 <div className="flex-shrink-0">
-                                    <svg className="h-5 w-5 text-amber-400 dark:text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                                    <svg className="h-5 w-5 text-graphite" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                                 <div className="ml-3">
-                                    <p className="text-sm text-amber-700 dark:text-amber-300">
+                                    <p className="text-sm text-concrete">
                                         <span className="font-bold">보안 팁:</span> API 키는 브라우저에만 저장되며 외부로 전송되지 않습니다. 하지만 보안을 위해 주기적으로 키를 재생성하는 것을 권장합니다.
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 p-4 rounded-r-lg">
-                            <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">설정 방법</h3>
-                            <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800 dark:text-blue-300">
+                        <div className="bg-mist border-l-4 border-graphite p-4 rounded-r-lg">
+                            <h3 className="font-semibold text-graphite mb-2">설정 방법</h3>
+                            <ol className="list-decimal list-inside space-y-2 text-sm text-concrete">
                                 <li>위 버튼을 클릭하여 API 키 발급 페이지로 이동</li>
                                 <li>새로운 API 키를 생성</li>
                                 <li>생성된 키를 복사하여 위 입력란에 붙여넣기</li>
@@ -231,20 +231,20 @@ const AISettingsPage: React.FC<AISettingsPageProps> = ({
                             </ol>
                         </div>
 
-                        <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg">
-                            <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">현재 설정</h3>
+                        <div className="bg-mist p-4 rounded-lg">
+                            <h3 className="font-semibold text-graphite mb-2">현재 설정</h3>
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600 dark:text-slate-400">활성 모델:</span>
-                                    <span className="font-medium text-slate-800 dark:text-slate-200">{AI_PROVIDER_NAMES[activeProvider]}</span>
+                                    <span className="text-concrete">활성 모델:</span>
+                                    <span className="font-medium text-graphite">{AI_PROVIDER_NAMES[activeProvider]}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600 dark:text-slate-400">세부 모델:</span>
-                                    <span className="font-medium text-slate-800 dark:text-slate-200">{selectedSubModels[activeProvider]}</span>
+                                    <span className="text-concrete">세부 모델:</span>
+                                    <span className="font-medium text-graphite">{selectedSubModels[activeProvider]}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600 dark:text-slate-400">API 키 상태:</span>
-                                    <span className={`font-medium ${apiKeys[activeProvider] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                    <span className="text-concrete">API 키 상태:</span>
+                                    <span className={`font-medium ${apiKeys[activeProvider] ? 'text-graphite' : 'text-ash'}`}>
                                         {apiKeys[activeProvider] ? '✓ 설정됨' : '✗ 미설정'}
                                     </span>
                                 </div>

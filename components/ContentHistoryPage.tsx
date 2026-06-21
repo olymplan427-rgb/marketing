@@ -104,10 +104,10 @@ const ContentHistoryPage: React.FC<ContentHistoryPageProps> = ({ onRestoreBlogPo
 
   const getTypeBadgeColor = (type: string) => {
     switch (type) {
-      case 'blog': return 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300';
-      case 'instagram': return 'bg-pink-100 dark:bg-pink-900/50 text-pink-700 dark:text-pink-300';
-      case 'threads': return 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300';
-      default: return 'bg-gray-100 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300';
+      case 'blog': return 'bg-mist text-graphite border border-hairline';
+      case 'instagram': return 'bg-mist text-graphite border border-hairline';
+      case 'threads': return 'bg-mist text-graphite border border-hairline';
+      default: return 'bg-mist text-graphite border border-hairline';
     }
   };
 
@@ -115,43 +115,43 @@ const ContentHistoryPage: React.FC<ContentHistoryPageProps> = ({ onRestoreBlogPo
   if (!isConfigured) {
     return (
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+        <div className="bg-chalk rounded-card p-8">
           <div className="text-center py-12">
-            <svg className="w-20 h-20 text-amber-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-20 h-20 text-graphite mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-3">Supabase 설정이 필요합니다</h2>
-            <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-graphite mb-3">Supabase 설정이 필요합니다</h2>
+            <p className="text-concrete mb-6 max-w-2xl mx-auto">
               컨텐츠 히스토리 기능을 사용하려면 Supabase 데이터베이스를 설정해야 합니다.
             </p>
 
-            <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-6 text-left max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">설정 방법:</h3>
-              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+            <div className="bg-mist rounded-lg p-6 text-left max-w-2xl mx-auto">
+              <h3 className="text-lg font-semibold text-graphite mb-4">설정 방법:</h3>
+              <ol className="space-y-3 text-sm text-concrete">
                 <li className="flex items-start gap-2">
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">1.</span>
+                  <span className="font-bold text-graphite">1.</span>
                   <span>Supabase 대시보드에서 Project URL과 anon key 복사</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">2.</span>
-                  <span>프로젝트 루트에 <code className="px-2 py-1 bg-slate-200 dark:bg-slate-600 rounded">.env</code> 파일 생성</span>
+                  <span className="font-bold text-graphite">2.</span>
+                  <span>프로젝트 루트에 <code className="px-2 py-1 bg-mist border border-hairline rounded">.env</code> 파일 생성</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">3.</span>
+                  <span className="font-bold text-graphite">3.</span>
                   <div>
                     <div>다음 내용 입력:</div>
-                    <pre className="mt-2 p-3 bg-slate-200 dark:bg-slate-800 rounded text-xs overflow-x-auto">
+                    <pre className="mt-2 p-3 bg-mist border border-hairline rounded text-xs overflow-x-auto">
 {`VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                     </pre>
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">4.</span>
-                  <span><code className="px-2 py-1 bg-slate-200 dark:bg-slate-600 rounded">supabase-schema.sql</code> 파일의 SQL을 Supabase SQL Editor에서 실행</span>
+                  <span className="font-bold text-graphite">4.</span>
+                  <span><code className="px-2 py-1 bg-mist border border-hairline rounded">supabase-schema.sql</code> 파일의 SQL을 Supabase SQL Editor에서 실행</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">5.</span>
+                  <span className="font-bold text-graphite">5.</span>
                   <span>개발 서버 재시작</span>
                 </li>
               </ol>
@@ -162,7 +162,7 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                 href="https://supabase.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-medium"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-graphite text-chalk rounded-lg hover:bg-carbon transition-colors font-medium"
               >
                 Supabase 시작하기
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,8 +171,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
               </a>
             </div>
 
-            <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
-              자세한 설명은 프로젝트의 <code className="px-2 py-1 bg-slate-200 dark:bg-slate-600 rounded">SUPABASE_SETUP.md</code> 파일을 참고하세요.
+            <p className="mt-6 text-sm text-concrete">
+              자세한 설명은 프로젝트의 <code className="px-2 py-1 bg-mist border border-hairline rounded">SUPABASE_SETUP.md</code> 파일을 참고하세요.
             </p>
           </div>
         </div>
@@ -184,26 +184,26 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
     <div className="max-w-7xl mx-auto">
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow">
-          <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">전체</div>
-          <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.total}</div>
+        <div className="bg-chalk rounded-lg p-4 border border-hairline">
+          <div className="text-sm text-concrete mb-1">전체</div>
+          <div className="text-2xl font-bold text-graphite">{stats.total}</div>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow">
-          <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">블로그</div>
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.byType.blog}</div>
+        <div className="bg-chalk rounded-lg p-4 border border-hairline">
+          <div className="text-sm text-concrete mb-1">블로그</div>
+          <div className="text-2xl font-bold text-graphite">{stats.byType.blog}</div>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow">
-          <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">인스타그램</div>
-          <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">{stats.byType.instagram}</div>
+        <div className="bg-chalk rounded-lg p-4 border border-hairline">
+          <div className="text-sm text-concrete mb-1">인스타그램</div>
+          <div className="text-2xl font-bold text-graphite">{stats.byType.instagram}</div>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow">
-          <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">쓰레드</div>
-          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats.byType.threads}</div>
+        <div className="bg-chalk rounded-lg p-4 border border-hairline">
+          <div className="text-sm text-concrete mb-1">쓰레드</div>
+          <div className="text-2xl font-bold text-graphite">{stats.byType.threads}</div>
         </div>
       </div>
 
       {/* 필터 및 검색 */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-6">
+      <div className="bg-chalk rounded-card p-6 mb-6 border border-hairline">
         <div className="flex flex-col md:flex-row gap-4">
           {/* 타입 필터 */}
           <div className="flex gap-2">
@@ -211,8 +211,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
               onClick={() => setSelectedType('all')}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 selectedType === 'all'
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-graphite text-chalk'
+                  : 'bg-mist text-concrete hover:bg-concrete/10'
               }`}
             >
               전체
@@ -221,8 +221,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
               onClick={() => setSelectedType('blog')}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 selectedType === 'blog'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-graphite text-chalk'
+                  : 'bg-mist text-concrete hover:bg-concrete/10'
               }`}
             >
               블로그
@@ -231,8 +231,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
               onClick={() => setSelectedType('instagram')}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 selectedType === 'instagram'
-                  ? 'bg-pink-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-graphite text-chalk'
+                  : 'bg-mist text-concrete hover:bg-concrete/10'
               }`}
             >
               인스타그램
@@ -241,8 +241,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
               onClick={() => setSelectedType('threads')}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 selectedType === 'threads'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-graphite text-chalk'
+                  : 'bg-mist text-concrete hover:bg-concrete/10'
               }`}
             >
               쓰레드
@@ -256,21 +256,21 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="제목이나 내용으로 검색..."
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400"
+              className="w-full px-4 py-2 bg-chalk border border-hairline rounded-lg text-graphite placeholder-ash focus:ring-2 focus:ring-graphite focus:border-graphite"
             />
           </div>
         </div>
       </div>
 
       {/* 컨텐츠 목록 */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+      <div className="bg-chalk rounded-card p-6 border border-hairline">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+          <h2 className="text-xl font-bold text-graphite">
             저장된 컨텐츠 ({filteredHistories.length})
           </h2>
           <button
             onClick={loadHistory}
-            className="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-graphite text-chalk rounded-lg hover:bg-carbon transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -281,23 +281,23 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
 
         {isLoading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-            <p className="mt-4 text-slate-600 dark:text-slate-400">로딩 중...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-graphite mx-auto"></div>
+            <p className="mt-4 text-concrete">로딩 중...</p>
           </div>
         ) : filteredHistories.length === 0 ? (
-          <div className="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600">
-            <svg className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-12 bg-mist rounded-lg border-2 border-dashed border-hairline">
+            <svg className="w-16 h-16 text-ash mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <p className="text-lg font-medium text-slate-600 dark:text-slate-300 mb-1">저장된 컨텐츠가 없습니다</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">컨텐츠를 생성하고 저장해보세요</p>
+            <p className="text-lg font-medium text-concrete mb-1">저장된 컨텐츠가 없습니다</p>
+            <p className="text-sm text-concrete">컨텐츠를 생성하고 저장해보세요</p>
           </div>
         ) : (
           <div className="space-y-3">
             {filteredHistories.map((history) => (
               <div
                 key={history.id}
-                className="flex items-start justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-indigo-300 dark:hover:border-indigo-500 transition-all cursor-pointer"
+                className="flex items-start justify-between p-4 bg-mist border border-hairline rounded-lg hover:border-graphite transition-colors cursor-pointer"
                 onClick={() => setSelectedContent(history)}
               >
                 <div className="flex-1 min-w-0">
@@ -305,25 +305,25 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getTypeBadgeColor(history.content_type)}`}>
                       {getTypeLabel(history.content_type)}
                     </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                    <span className="text-xs text-concrete">
                       {formatDate(history.created_at!)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1 truncate">
+                  <h3 className="text-lg font-semibold text-graphite mb-1 truncate">
                     {history.title}
                   </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">
+                  <p className="text-sm text-concrete line-clamp-2">
                     {history.content.substring(0, 150)}...
                   </p>
                   {history.metadata && Object.keys(history.metadata).length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
                       {history.metadata.keywords && (
-                        <span className="text-xs px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded">
+                        <span className="text-xs px-2 py-1 bg-mist text-graphite border border-hairline rounded">
                           {history.metadata.keywords.split(',')[0]}
                         </span>
                       )}
                       {history.metadata.category && (
-                        <span className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded">
+                        <span className="text-xs px-2 py-1 bg-mist text-graphite border border-hairline rounded">
                           {history.metadata.category}
                         </span>
                       )}
@@ -335,7 +335,7 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                     e.stopPropagation();
                     handleDelete(history.id!);
                   }}
-                  className="ml-4 p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                  className="ml-4 p-2 text-graphite hover:bg-mist rounded-lg transition-colors"
                   title="삭제"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -350,57 +350,57 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
 
       {/* 상세 보기 모달 */}
       {selectedContent && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setSelectedContent(null)}>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-6 flex items-center justify-between">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedContent(null)}>
+          <div className="bg-chalk rounded-card max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-hairline" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-chalk border-b border-hairline p-6 flex items-center justify-between">
               <div>
                 <span className={`px-3 py-1 text-sm font-semibold rounded-full ${getTypeBadgeColor(selectedContent.content_type)}`}>
                   {getTypeLabel(selectedContent.content_type)}
                 </span>
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{selectedContent.title}</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <h2 className="text-2xl font-bold text-graphite mt-2">{selectedContent.title}</h2>
+                <p className="text-sm text-concrete mt-1">
                   {formatDate(selectedContent.created_at!)}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedContent(null)}
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                className="p-2 hover:bg-mist rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-concrete" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             <div className="p-6">
-              <div className="prose dark:prose-invert max-w-none">
-                <pre className="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg">
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap text-sm text-graphite bg-mist p-4 rounded-lg">
                   {selectedContent.content}
                 </pre>
               </div>
               {selectedContent.images && selectedContent.images.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-3">
+                  <h3 className="text-lg font-semibold text-graphite mb-3">
                     이미지 프롬프트 ({selectedContent.images.length}개)
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     {selectedContent.images.map((img, idx) => (
-                      <div key={idx} className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600">
+                      <div key={idx} className="bg-mist p-4 rounded-lg border border-hairline">
                         {/* 원본 프롬프트 */}
                         <div className="mb-3">
-                          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">원본 설명:</p>
-                          <p className="text-sm text-slate-700 dark:text-slate-300">{img.prompt}</p>
+                          <p className="text-xs font-semibold text-concrete mb-1">원본 설명:</p>
+                          <p className="text-sm text-graphite">{img.prompt}</p>
                         </div>
 
                         {/* 이미지 생성 프롬프트 */}
                         {img.midjourneyPrompt && (
-                          <div className="mb-3 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
+                          <div className="mb-3 p-3 bg-mist rounded-lg border border-hairline">
                             <div className="flex items-center gap-2 mb-2">
-                              <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-4 h-4 text-graphite" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
                               </svg>
-                              <p className="text-xs font-semibold text-purple-700 dark:text-purple-300">이미지 생성 프롬프트:</p>
+                              <p className="text-xs font-semibold text-graphite">이미지 생성 프롬프트:</p>
                             </div>
-                            <p className="text-sm text-purple-900 dark:text-purple-100 font-mono bg-white dark:bg-slate-800 p-2 rounded border border-purple-100 dark:border-purple-800">
+                            <p className="text-sm text-graphite font-mono bg-chalk p-2 rounded border border-hairline">
                               {img.midjourneyPrompt}
                             </p>
                             <button
@@ -408,7 +408,7 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                                 navigator.clipboard.writeText(img.midjourneyPrompt!);
                                 alert('이미지 생성 프롬프트가 복사되었습니다!');
                               }}
-                              className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
+                              className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold bg-graphite text-chalk rounded-lg hover:bg-carbon transition-colors"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -421,8 +421,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                         {/* Gemini 생성 이미지 */}
                         {img.geminiImageUrl && img.geminiImageUrl !== 'error' && (
                           <div>
-                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">Gemini 생성 이미지:</p>
-                            <img src={img.geminiImageUrl} alt={img.prompt} className="w-full rounded-lg border border-slate-200 dark:border-slate-600" />
+                            <p className="text-xs font-semibold text-concrete mb-2">Gemini 생성 이미지:</p>
+                            <img src={img.geminiImageUrl} alt={img.prompt} className="w-full rounded-lg border border-hairline" />
                           </div>
                         )}
                       </div>
@@ -431,13 +431,13 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here`}
                 </div>
               )}
               {selectedContent.content_type === 'blog' && onRestoreBlogPost && (
-                <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <div className="mt-6 pt-6 border-t border-hairline">
                   <button
                     onClick={() => {
                       onRestoreBlogPost(selectedContent);
                       setSelectedContent(null);
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-sm hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:-translate-y-px"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold bg-graphite text-chalk rounded-lg hover:bg-carbon transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />

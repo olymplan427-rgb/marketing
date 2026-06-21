@@ -44,16 +44,16 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-chalk p-4">
+      <div className="bg-chalk rounded-card border border-hairline p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">AI 블로그 포스트 생성기</h1>
-          <p className="text-gray-600">이메일로 간편하게 로그인하세요</p>
+          <h1 className="text-3xl font-bold text-graphite mb-2">AI 블로그 포스트 생성기</h1>
+          <p className="text-concrete">이메일로 간편하게 로그인하세요</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-graphite mb-2">
               이메일 주소
             </label>
             <input
@@ -62,7 +62,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-hairline rounded-lg focus:ring-2 focus:ring-graphite focus:border-transparent transition-colors"
               disabled={isLoading}
             />
           </div>
@@ -70,24 +70,27 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
           {message && (
             <div className={`p-4 rounded-lg ${
               message.type === 'success'
-                ? 'bg-green-50 border border-green-200 text-green-800'
-                : 'bg-red-50 border border-red-200 text-red-800'
+                ? 'bg-mist border border-hairline text-graphite'
+                : 'bg-graphite text-chalk'
             }`}>
-              <p className="text-sm">{message.text}</p>
+              <p className="text-sm">
+                <span className="font-bold mr-1.5">{message.type === 'success' ? '✓' : '!'}</span>
+                {message.text}
+              </p>
             </div>
           )}
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-graphite text-chalk py-3 rounded-lg font-medium hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? '발송 중...' : '로그인 링크 받기'}
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
+        <div className="mt-6 pt-6 border-t border-hairline">
+          <p className="text-xs text-concrete text-center">
             로그인하면 모든 기기에서 동일한 설정과 콘텐츠에 접근할 수 있습니다.
             <br />
             이메일로 발송된 로그인 링크를 클릭하면 자동으로 로그인됩니다.
@@ -95,7 +98,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
         </div>
 
         <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-concrete">
             처음 사용하시나요? 이메일을 입력하면 자동으로 계정이 생성됩니다.
           </p>
         </div>

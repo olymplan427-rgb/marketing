@@ -128,10 +128,10 @@ const AppContent: React.FC = () => {
   // AI 설정 로딩 중 (모든 훅 호출 후 체크)
   if (!isInitialLoadComplete) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="flex items-center justify-center h-screen bg-chalk">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">설정을 불러오는 중...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-graphite mx-auto mb-4"></div>
+          <p className="text-concrete">설정을 불러오는 중...</p>
         </div>
       </div>
     );
@@ -140,10 +140,10 @@ const AppContent: React.FC = () => {
   // 인증 로딩 중
   if (isAuthLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="flex items-center justify-center h-screen bg-chalk">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">로딩 중...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-graphite mx-auto mb-4"></div>
+          <p className="text-concrete">로딩 중...</p>
         </div>
       </div>
     );
@@ -177,7 +177,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="flex h-screen bg-chalk">
       {/* Sidebar */}
       <Sidebar
         activeMenu={activeMenu}

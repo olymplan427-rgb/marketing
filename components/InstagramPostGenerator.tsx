@@ -41,7 +41,7 @@ const InstagramPostGenerator: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white flex flex-col items-center justify-center p-4 lg:p-8">
+    <div className="bg-chalk min-h-screen text-graphite flex flex-col items-center justify-center p-4 lg:p-8">
       {/* Off-screen component for high-resolution image capture */}
       <div style={{ position: 'absolute', top: 0, left: '-9999px', pointerEvents: 'none' }}>
         <InstagramPostPreview

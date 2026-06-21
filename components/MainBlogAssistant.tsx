@@ -8,6 +8,8 @@ import GeneratedImagesDisplay from './GeneratedImagesDisplay';
 import Loader from './Loader';
 import { WandIcon } from './IconComponents';
 import FloatingLabelInput from './FloatingLabelInput';
+import Button from './ui/Button';
+import Card from './ui/Card';
 
 interface MainBlogAssistantProps {
   formState: BlogGenerationParams;
@@ -202,7 +204,7 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
   return (
     <>
       {error && (
-        <div className="max-w-4xl mx-auto bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded-md mb-6" role="alert">
+        <div className="max-w-4xl mx-auto bg-mist border-l-4 border-graphite text-graphite p-4 rounded-lg mb-6" role="alert">
           <p className="font-bold">오류 발생</p>
           <p>{error}</p>
         </div>
@@ -211,27 +213,25 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         {/* Left Column: Form */}
         <div className="lg:col-span-1 space-y-6 relative">
-          {/* Glassmorphism Card */}
-          <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border border-white/30 dark:border-slate-700/50 rounded-2xl shadow-2xl shadow-indigo-500/10 dark:shadow-indigo-500/5 p-8 relative overflow-hidden">
-            {/* Card glass effect overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 dark:from-slate-700/20 via-transparent to-transparent pointer-events-none" />
-            <div className="relative z-10">
+          {/* Flat card — border-first (Card primitive) */}
+          <Card padding="lg">
+            <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">블로그 기본 정보</h2>
+                <h2 className="text-2xl font-bold text-graphite">블로그 기본 정보</h2>
                 <button
                   onClick={() => {
                     setFormState({ region: '한국', category: '', topic: '', keywords: '', targetAudience: '', writerInsight: '', wordCount: '2000', referenceUrls: '' });
                     resetFiles();
                   }}
-                  className="text-sm text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-sm text-concrete hover:text-graphite transition-colors"
                 >
                   초기화
                 </button>
               </div>
 
               {/* AI Topic Suggestions */}
-              <details className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border dark:border-slate-600 mb-6" open>
-                <summary className="font-semibold text-slate-700 dark:text-slate-200 cursor-pointer">AI 글감 추천받기</summary>
+              <details className="bg-mist p-4 rounded-lg border border-hairline mb-6" open>
+                <summary className="font-semibold text-graphite cursor-pointer">AI 글감 추천받기</summary>
                 <div className="mt-4 space-y-4">
                   <FloatingLabelInput label="지역" name="region" value={formState.region} onChange={handleInputChange} type="select">
                     <option>한국</option>
@@ -241,20 +241,20 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                   </FloatingLabelInput>
 
                   <div>
-                    <label htmlFor="category" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">카테고리 선택</label>
+                    <label htmlFor="category" className="block text-sm font-medium text-graphite mb-1">카테고리 선택</label>
                     <select
                       id="category"
                       name="category"
                       value={formState.category}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                      className="w-full px-3 py-2 bg-chalk text-graphite border border-hairline rounded-lg focus:outline-none focus:ring-1 focus:ring-graphite focus:border-graphite"
                     >
                       <option value="">카테고리 선택</option>
                       {userCategories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
 
                     <div className="mt-4">
-                      <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">카테고리 관리</label>
+                      <label className="block text-sm font-medium text-concrete mb-2">카테고리 관리</label>
                       <div className="flex gap-2">
                         <input
                           type="text"
@@ -262,21 +262,18 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                           onChange={(e) => setNewCategoryInput(e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddCategory(); } }}
                           placeholder="추가할 카테고리 입력"
-                          className="w-full px-3 py-2 bg-white dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                          className="w-full px-3 py-2 bg-chalk text-graphite border border-hairline rounded-lg placeholder-concrete focus:outline-none focus:ring-1 focus:ring-graphite focus:border-graphite"
                         />
-                        <button
-                          onClick={handleAddCategory}
-                          className="flex-shrink-0 px-6 py-2.5 text-sm font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-300/60 dark:border-indigo-600/60 bg-gradient-to-r from-indigo-50 to-indigo-100/80 dark:from-indigo-900/50 dark:to-indigo-800/50 backdrop-blur-sm rounded-xl shadow-md shadow-indigo-500/10 dark:shadow-indigo-500/5 hover:from-indigo-100 hover:to-indigo-200/80 dark:hover:from-indigo-800/60 dark:hover:to-indigo-700/60 hover:shadow-lg hover:shadow-indigo-500/20 hover:scale-[1.02] transform transition-all duration-300 ease-out"
-                        >
+                        <Button variant="secondary" size="md" onClick={handleAddCategory} className="flex-shrink-0">
                           추가
-                        </button>
+                        </Button>
                       </div>
                       {userCategories.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-2 p-2 bg-slate-100/70 dark:bg-slate-700/50 rounded-md border dark:border-slate-600">
+                        <div className="mt-2 flex flex-wrap gap-2 p-2 bg-mist rounded-lg border border-hairline">
                           {userCategories.map(cat => (
-                            <span key={cat} className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white/80 dark:bg-slate-600/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 rounded-full border border-slate-200/60 dark:border-slate-500/60 shadow-md shadow-slate-500/10 hover:bg-white dark:hover:bg-slate-600 hover:shadow-lg hover:shadow-slate-500/20 hover:scale-105 transform transition-all duration-200 ease-out">
+                            <span key={cat} className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-chalk text-graphite rounded-full border border-hairline hover:bg-mist transition-colors">
                               {cat}
-                              <button onClick={() => handleRemoveCategory(cat)} className="text-slate-400 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:scale-110 transform transition-all duration-200 ease-out" aria-label={`Remove ${cat} category`}>
+                              <button onClick={() => handleRemoveCategory(cat)} className="text-concrete hover:text-graphite transition-colors" aria-label={`Remove ${cat} category`}>
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -298,24 +295,26 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                     info="주제 추천 및 글 생성의 정확도를 높이기 위해 참고할 블로그, 뉴스, 유튜브 링크 등을 한 줄에 하나씩 입력해주세요."
                   />
 
-                  <button
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    fullWidth
                     onClick={handleGenerateTopics}
                     disabled={isLoading.topics || !formState.category}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-slate-600 to-slate-700 rounded-xl shadow-lg shadow-slate-500/20 hover:from-slate-700 hover:to-slate-800 hover:shadow-xl hover:shadow-slate-600/30 hover:scale-[1.02] transform transition-all duration-300 ease-out disabled:from-slate-400 disabled:to-slate-400 disabled:shadow-none disabled:transform-none disabled:cursor-not-allowed"
                   >
                     {isLoading.topics ? <Loader className="w-4 h-4" /> : <WandIcon className="w-4 h-4" />}
                     최신 SEO 트렌드 주제 추천받기
-                  </button>
+                  </Button>
 
                   {topicSuggestions.length > 0 && (
                     <div className="pt-2">
-                      <h4 className="text-sm font-medium text-slate-500 mb-2">추천 주제:</h4>
+                      <h4 className="text-sm font-medium text-concrete mb-2">추천 주제:</h4>
                       <div className="flex flex-wrap gap-2">
                         {topicSuggestions.map((item) => (
                           <button
                             key={item}
                             onClick={() => setFormState(p => ({ ...p, topic: item }))}
-                            className="px-4 py-2 text-xs bg-gradient-to-r from-slate-100 to-slate-200/80 backdrop-blur-sm text-slate-700 rounded-full border border-slate-200/60 shadow-md shadow-slate-500/10 hover:from-slate-200 hover:to-slate-300/80 hover:shadow-lg hover:shadow-slate-500/20 hover:scale-105 transform transition-all duration-200 ease-out"
+                            className="px-4 py-2 text-xs bg-mist text-graphite rounded-full border border-hairline hover:bg-hairline transition-colors"
                           >
                             {item}
                           </button>
@@ -339,14 +338,16 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                     info="블로그 게시물의 핵심 주제를 입력해주세요."
                   />
                   <div className="mt-2">
-                    <button
+                    <Button
+                      variant="secondary"
+                      size="lg"
+                      fullWidth
                       onClick={handleGenerateFieldSuggestions}
                       disabled={isLoading.fieldSuggestions || !formState.topic}
-                      className="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl shadow-lg shadow-emerald-500/20 hover:from-emerald-600 hover:to-teal-700 hover:shadow-xl hover:shadow-emerald-600/30 hover:scale-[1.02] transform transition-all duration-300 ease-out disabled:from-slate-400 disabled:to-slate-400 disabled:shadow-none disabled:transform-none disabled:cursor-not-allowed"
                     >
                       {isLoading.fieldSuggestions ? <Loader className="w-4 h-4" /> : <WandIcon className="w-4 h-4" />}
                       AI Generation
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
@@ -371,7 +372,7 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                               setFormState(p => ({ ...p, keywords: [...currentKeywords, item].join(', ') }))
                             }
                           }}
-                          className="px-4 py-2 text-xs bg-gradient-to-r from-emerald-50 to-emerald-100/80 backdrop-blur-sm text-emerald-800 rounded-full border border-emerald-200/60 shadow-md shadow-emerald-500/10 hover:from-emerald-100 hover:to-emerald-200/80 hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 transform transition-all duration-200 ease-out"
+                          className="px-4 py-2 text-xs bg-mist text-graphite rounded-full border border-hairline hover:bg-hairline transition-colors"
                         >
                           {item}
                         </button>
@@ -396,7 +397,7 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                         <button
                           key={item}
                           onClick={() => setFormState(p => ({ ...p, targetAudience: item }))}
-                          className={`px-4 py-2 text-xs rounded-full border shadow-md transform hover:scale-105 transition-all duration-200 ease-out ${formState.targetAudience === item ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-indigo-400/60 shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30' : 'bg-gradient-to-r from-slate-100 to-slate-200/80 backdrop-blur-sm text-slate-700 border-slate-200/60 shadow-slate-500/10 hover:from-slate-200 hover:to-slate-300/80 hover:shadow-lg hover:shadow-slate-500/20'}`}
+                          className={`px-4 py-2 text-xs rounded-full border transition-colors ${formState.targetAudience === item ? 'bg-graphite text-chalk border-graphite' : 'bg-mist text-graphite border-hairline hover:bg-hairline'}`}
                         >
                           {item}
                         </button>
@@ -425,12 +426,12 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                 />
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">참고 파일 첨부 (선택 사항)</label>
+                  <label className="block text-sm font-medium text-graphite mb-1">참고 파일 첨부 (선택 사항)</label>
                   <div
-                    className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md cursor-pointer transition-colors ${
+                    className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
                       isDragging
-                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                        : 'border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500'
+                        ? 'border-graphite bg-mist'
+                        : 'border-hairline hover:border-concrete'
                     }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -438,11 +439,11 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                     onClick={handleUploadAreaClick}
                   >
                     <div className="space-y-1 text-center">
-                      <svg className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                      <svg className="mx-auto h-12 w-12 text-concrete" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                      <div className="flex text-sm text-slate-600 dark:text-slate-400">
-                        <span className="relative font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">
+                      <div className="flex text-sm text-concrete">
+                        <span className="relative font-medium text-graphite underline hover:text-concrete">
                           파일 선택
                         </span>
                         <input
@@ -458,7 +459,7 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                         />
                         <p className="pl-1">또는 파일을 끌어다 놓으세요</p>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-concrete">
                         허용 파일: .txt, .md | 최대 5개, 각 2MB 이하
                       </p>
                     </div>
@@ -468,13 +469,13 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                   {files.length > 0 && (
                     <div className="mt-3 space-y-2">
                       <div className="flex items-center justify-between">
-                        <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                        <p className="text-xs font-medium text-concrete">
                           선택된 파일 ({files.length}/5)
                         </p>
                         <button
                           type="button"
                           onClick={resetFiles}
-                          className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium"
+                          className="text-xs text-concrete hover:text-graphite font-medium"
                         >
                           전체 삭제
                         </button>
@@ -483,15 +484,15 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                         {files.map((file, index) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-700/50 rounded-md border border-slate-200 dark:border-slate-600"
+                            className="flex items-center justify-between px-3 py-2 bg-mist rounded-lg border border-hairline"
                           >
                             <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <svg className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-4 h-4 text-concrete flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                               </svg>
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm text-slate-700 dark:text-slate-300 truncate">{file.name}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                <p className="text-sm text-graphite truncate">{file.name}</p>
+                                <p className="text-xs text-concrete">
                                   {(file.size / 1024).toFixed(1)} KB
                                 </p>
                               </div>
@@ -502,7 +503,7 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                                 e.stopPropagation();
                                 removeFile(index);
                               }}
-                              className="ml-2 p-1 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                              className="ml-2 p-1 text-concrete hover:text-graphite hover:bg-mist rounded transition-colors"
                               aria-label={`${file.name} 삭제`}
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -516,17 +517,19 @@ const MainBlogAssistant: React.FC<MainBlogAssistantProps> = (props) => {
                   )}
                 </div>
 
-                <button
+                <Button
+                  variant="primary"
+                  size="xl"
+                  fullWidth
                   onClick={handleReviewPrompt}
                   disabled={isGenerating || !formState.topic}
-                  className="w-full flex items-center justify-center gap-3 px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-2xl shadow-indigo-500/30 hover:from-indigo-700 hover:to-purple-700 hover:shadow-2xl hover:shadow-indigo-600/40 transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out disabled:from-slate-400 disabled:to-slate-400 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                 >
                   {isLoading.post && <Loader className="w-6 h-6" />}
                   <span>프롬프트 검토 및 AI 글 생성</span>
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Right Column: Display */}

@@ -133,22 +133,22 @@ const PromptSettingsModal: React.FC<PromptSettingsModalProps> = ({ isOpen, onClo
             className="fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4 transition-opacity duration-300 animate-fadeIn"
             onClick={onClose}
         >
-            <div 
-                className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col transform transition-transform duration-300 animate-scaleIn"
+            <div
+                className="bg-chalk border border-hairline rounded-card w-full max-w-5xl max-h-[85vh] flex flex-col transition-transform duration-300 animate-scaleIn"
                 onClick={(e) => e.stopPropagation()}
             >
-                <header className="flex items-center justify-between p-4 border-b border-slate-200 flex-shrink-0">
+                <header className="flex items-center justify-between p-4 border-b border-hairline flex-shrink-0">
                     <div>
-                        <h2 className="text-xl font-semibold text-slate-800">프롬프트 관리</h2>
-                        <p className="text-sm text-slate-500 mt-1">AI 글 생성 과정의 각 단계에서 사용되는 프롬프트를 수정합니다.</p>
+                        <h2 className="text-xl font-semibold text-graphite">프롬프트 관리</h2>
+                        <p className="text-sm text-concrete mt-1">AI 글 생성 과정의 각 단계에서 사용되는 프롬프트를 수정합니다.</p>
                     </div>
-                    <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full">
+                    <button onClick={onClose} className="p-2 text-ash hover:text-concrete hover:bg-mist rounded-full">
                         <XIcon className="w-5 h-5" />
                     </button>
                 </header>
                 
                 <main className="flex-grow flex min-h-0">
-                    <aside className="w-1/4 p-4 border-r border-slate-200 flex flex-col justify-between">
+                    <aside className="w-1/4 p-4 border-r border-hairline flex flex-col justify-between">
                         <div className="space-y-2">
                            {promptKeys.map((key) => {
                                 const config = PROMPT_CONFIG[key as PromptKey];
@@ -156,10 +156,10 @@ const PromptSettingsModal: React.FC<PromptSettingsModalProps> = ({ isOpen, onClo
                                     <button
                                         key={key}
                                         onClick={() => setSelectedPrompt(key as PromptKey)}
-                                        className={`w-full text-left px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                                        className={`w-full text-left px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                                             selectedPrompt === key
-                                                ? 'bg-indigo-100 text-indigo-700'
-                                                : 'text-slate-600 hover:bg-slate-100'
+                                                ? 'bg-mist text-graphite'
+                                                : 'text-concrete hover:bg-mist'
                                         }`}
                                     >
                                         {config.name}
@@ -169,7 +169,7 @@ const PromptSettingsModal: React.FC<PromptSettingsModalProps> = ({ isOpen, onClo
                         </div>
                         <button 
                             onClick={handleResetAll}
-                            className="w-full mt-4 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-200/80"
+                            className="w-full mt-4 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-graphite bg-chalk hover:bg-mist rounded-lg transition-colors border border-hairline"
                         >
                             <RefreshCwIcon className="w-4 h-4" />
                             <span>모두 기본값으로 초기화</span>
@@ -177,25 +177,25 @@ const PromptSettingsModal: React.FC<PromptSettingsModalProps> = ({ isOpen, onClo
                     </aside>
                     
                     <section className="w-3/4 flex flex-col">
-                        <div className="p-6 border-b border-slate-200">
-                             <h3 className="text-lg font-semibold text-slate-800">{currentConfig.name}</h3>
-                             <p className="text-sm text-slate-500 mt-1">{currentConfig.description}</p>
+                        <div className="p-6 border-b border-hairline">
+                             <h3 className="text-lg font-semibold text-graphite">{currentConfig.name}</h3>
+                             <p className="text-sm text-concrete mt-1">{currentConfig.description}</p>
                         </div>
                         <div className="flex-grow flex min-h-0">
                             <div className="w-2/3 p-2">
                                 <textarea
                                     value={localTemplates[selectedPrompt]}
                                     onChange={handleTemplateChange}
-                                    className="w-full h-full p-4 bg-slate-50 border border-slate-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-xs leading-relaxed"
+                                    className="w-full h-full p-4 bg-mist border border-hairline rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-graphite font-mono text-xs leading-relaxed"
                                 />
                             </div>
-                            <div className="w-1/3 p-4 border-l border-slate-200 overflow-y-auto bg-slate-50/50">
-                                <h4 className="text-base font-semibold text-slate-700 mb-3">사용 가능한 변수</h4>
+                            <div className="w-1/3 p-4 border-l border-hairline overflow-y-auto bg-mist">
+                                <h4 className="text-base font-semibold text-graphite mb-3">사용 가능한 변수</h4>
                                 <ul className="space-y-3">
                                     {Object.entries(currentConfig.variables).map(([variable, description]) => (
                                         <li key={variable}>
-                                            <code className="text-xs font-bold bg-indigo-100 text-indigo-800 rounded px-1.5 py-0.5">{variable}</code>
-                                            <p className="text-xs text-slate-500 mt-1">{description}</p>
+                                            <code className="text-xs font-bold bg-smoke text-graphite rounded px-1.5 py-0.5">{variable}</code>
+                                            <p className="text-xs text-concrete mt-1">{description}</p>
                                         </li>
                                     ))}
                                 </ul>
@@ -204,16 +204,16 @@ const PromptSettingsModal: React.FC<PromptSettingsModalProps> = ({ isOpen, onClo
                     </section>
                 </main>
 
-                <footer className="flex justify-end items-center gap-3 p-4 bg-white border-t border-slate-200 rounded-b-xl flex-shrink-0">
-                    <button 
+                <footer className="flex justify-end items-center gap-3 p-4 bg-chalk border-t border-hairline rounded-b-card flex-shrink-0">
+                    <button
                         onClick={onClose}
-                        className="px-5 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                        className="px-5 py-2 text-sm font-medium text-graphite border border-hairline bg-chalk hover:bg-mist rounded-lg transition-colors"
                     >
                         취소
                     </button>
                     <button
                         onClick={handleSave}
-                        className="flex items-center justify-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-colors"
+                        className="flex items-center justify-center gap-2 px-5 py-2 text-sm font-semibold text-chalk bg-graphite hover:bg-carbon rounded-lg transition-colors"
                     >
                         <CheckIcon className="w-4 h-4" />
                         <span>변경사항 저장</span>

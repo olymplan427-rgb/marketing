@@ -61,7 +61,7 @@ const ThreadsAuthCallback: React.FC<ThreadsAuthCallbackProps> = ({
       // sessionStorage에서 이전 페이지 정보 확인
       const returnToPage = sessionStorage.getItem('threads_auth_return_page') || 'threads-auto-posting';
       sessionStorage.removeItem('threads_auth_return_page'); // 사용 후 삭제
-      
+
       // 1초 후 Threads 포스트 페이지로 이동 (상태 업데이트를 위해 짧은 딜레이)
       setTimeout(() => {
         // URL 파라미터에 인증 완료 플래그 추가하여 상태 업데이트 트리거
@@ -77,36 +77,36 @@ const ThreadsAuthCallback: React.FC<ThreadsAuthCallbackProps> = ({
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.iconContainer}>
+    <div className="flex justify-center items-center min-h-screen bg-chalk p-5">
+      <div className="bg-chalk rounded-card border border-hairline p-10 max-w-[500px] w-full text-center">
+        <div className="mb-6">
           {status === 'loading' && (
-            <div style={styles.spinner}></div>
+            <div className="w-12 h-12 border-4 border-hairline border-t-graphite rounded-full animate-spin mx-auto"></div>
           )}
           {status === 'success' && (
-            <div style={styles.successIcon}>✓</div>
+            <div className="w-16 h-16 bg-graphite rounded-full flex items-center justify-center mx-auto text-chalk text-3xl font-bold">✓</div>
           )}
           {status === 'error' && (
-            <div style={styles.errorIcon}>✕</div>
+            <div className="w-16 h-16 bg-graphite rounded-full flex items-center justify-center mx-auto text-chalk text-3xl font-bold">✕</div>
           )}
         </div>
 
-        <h2 style={styles.title}>
+        <h2 className="text-2xl font-bold mb-4 text-graphite">
           {status === 'loading' && 'Threads 인증 처리 중'}
           {status === 'success' && '인증 완료'}
           {status === 'error' && '인증 실패'}
         </h2>
 
-        <p style={styles.message}>{message}</p>
+        <p className="text-base text-concrete mb-3">{message}</p>
 
         {status === 'success' && (
-          <p style={styles.subMessage}>잠시 후 메인 페이지로 이동합니다...</p>
+          <p className="text-sm text-ash italic">잠시 후 메인 페이지로 이동합니다...</p>
         )}
 
         {status === 'error' && (
           <button
             onClick={() => window.location.href = '/'}
-            style={styles.button}
+            className="mt-5 px-6 py-3 bg-graphite text-chalk rounded-lg text-base cursor-pointer hover:bg-carbon transition-colors"
           >
             메인 페이지로 돌아가기
           </button>
@@ -115,102 +115,5 @@ const ThreadsAuthCallback: React.FC<ThreadsAuthCallbackProps> = ({
     </div>
   );
 };
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    padding: '20px'
-  },
-  card: {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    padding: '40px',
-    maxWidth: '500px',
-    width: '100%',
-    textAlign: 'center',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-  },
-  iconContainer: {
-    marginBottom: '24px'
-  },
-  spinner: {
-    width: '48px',
-    height: '48px',
-    border: '4px solid #f3f3f3',
-    borderTop: '4px solid #3498db',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-    margin: '0 auto'
-  },
-  successIcon: {
-    width: '64px',
-    height: '64px',
-    backgroundColor: '#4CAF50',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto',
-    color: 'white',
-    fontSize: '32px',
-    fontWeight: 'bold'
-  },
-  errorIcon: {
-    width: '64px',
-    height: '64px',
-    backgroundColor: '#f44336',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto',
-    color: 'white',
-    fontSize: '32px',
-    fontWeight: 'bold'
-  },
-  title: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '16px',
-    color: '#333'
-  },
-  message: {
-    fontSize: '16px',
-    color: '#666',
-    marginBottom: '12px'
-  },
-  subMessage: {
-    fontSize: '14px',
-    color: '#999',
-    fontStyle: 'italic'
-  },
-  button: {
-    marginTop: '20px',
-    padding: '12px 24px',
-    backgroundColor: '#3498db',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '16px',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s'
-  }
-};
-
-// CSS 애니메이션 추가 (런타임에 삽입)
-if (typeof document !== 'undefined') {
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
-}
 
 export default ThreadsAuthCallback;

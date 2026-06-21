@@ -89,26 +89,26 @@ const InstagramPostHistory: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-white dark:bg-slate-900">
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-chalk">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-graphite mb-2">
           📊 인스타그램 포스트 히스토리
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-concrete">
           생성된 인스타그램 포스트를 관리하고 확인하세요
         </p>
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="mb-4 bg-red-500/20 text-red-300 p-4 rounded-lg">
+        <div className="mb-4 bg-mist border border-hairline text-graphite p-4 rounded-lg">
           <div className="flex items-start justify-between">
             <div>
               <h3 className="font-semibold mb-1">오류 발생</h3>
               <p className="text-sm">{error}</p>
             </div>
-            <button onClick={() => setError(null)} className="text-red-300 hover:text-white">
+            <button onClick={() => setError(null)} className="text-concrete hover:text-graphite">
               ×
             </button>
           </div>
@@ -117,35 +117,35 @@ const InstagramPostHistory: React.FC = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{stats.total}</div>
-          <div className="text-sm text-slate-600 dark:text-slate-400">전체</div>
+        <div className="bg-mist p-4 rounded-card border border-hairline">
+          <div className="text-2xl font-bold text-graphite">{stats.total}</div>
+          <div className="text-sm text-concrete">전체</div>
         </div>
-        <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.draft}</div>
-          <div className="text-sm text-slate-600 dark:text-slate-400">임시저장</div>
+        <div className="bg-mist p-4 rounded-card border border-hairline">
+          <div className="text-2xl font-bold text-graphite">{stats.draft}</div>
+          <div className="text-sm text-concrete">임시저장</div>
         </div>
-        <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.scheduled}</div>
-          <div className="text-sm text-slate-600 dark:text-slate-400">예약됨</div>
+        <div className="bg-mist p-4 rounded-card border border-hairline">
+          <div className="text-2xl font-bold text-graphite">{stats.scheduled}</div>
+          <div className="text-sm text-concrete">예약됨</div>
         </div>
-        <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.published}</div>
-          <div className="text-sm text-slate-600 dark:text-slate-400">발행됨</div>
+        <div className="bg-mist p-4 rounded-card border border-hairline">
+          <div className="text-2xl font-bold text-graphite">{stats.published}</div>
+          <div className="text-sm text-concrete">발행됨</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 mb-6">
+      <div className="bg-mist p-4 rounded-card border border-hairline mb-6">
         <div className="flex flex-wrap gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               발행 상태
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-800 dark:text-white"
+              className="px-3 py-2 bg-chalk border border-hairline rounded-lg text-graphite"
             >
               <option value="all">전체</option>
               <option value="draft">임시저장</option>
@@ -155,13 +155,13 @@ const InstagramPostHistory: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-medium text-graphite mb-2">
               생성 방식
             </label>
             <select
               value={sourceFilter}
               onChange={(e) => setSourceFilter(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-slate-800 dark:text-white"
+              className="px-3 py-2 bg-chalk border border-hairline rounded-lg text-graphite"
             >
               <option value="all">전체</option>
               <option value="manual">수동 생성</option>
@@ -174,7 +174,7 @@ const InstagramPostHistory: React.FC = () => {
             <button
               onClick={loadPosts}
               disabled={loading}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded transition-colors"
+              className="px-4 py-2 bg-graphite hover:bg-carbon disabled:bg-ash disabled:cursor-not-allowed text-chalk rounded-lg transition-colors"
             >
               🔄 새로고침
             </button>
@@ -184,25 +184,25 @@ const InstagramPostHistory: React.FC = () => {
 
       {/* Posts List */}
       {loading && posts.length === 0 ? (
-        <div className="text-center py-12 text-gray-600 dark:text-gray-400">
+        <div className="text-center py-12 text-concrete">
           <div className="animate-spin text-4xl mb-4">⏳</div>
           <p>로딩 중...</p>
         </div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-12 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="text-center py-12 bg-mist rounded-card border border-hairline">
           <div className="text-4xl mb-4">📝</div>
-          <p className="text-gray-600 dark:text-gray-400">생성된 포스트가 없습니다</p>
+          <p className="text-concrete">생성된 포스트가 없습니다</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
             <div
               key={post.id}
-              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow"
+              className="bg-chalk rounded-card border border-hairline overflow-hidden transition-colors"
             >
               {/* Image */}
               {post.image_url && (
-                <div className="aspect-[4/5] bg-slate-100 dark:bg-slate-700">
+                <div className="aspect-[4/5] bg-mist">
                   <img
                     src={post.image_url}
                     alt="Post"
@@ -219,7 +219,7 @@ const InstagramPostHistory: React.FC = () => {
                 {/* Question Text */}
                 {post.question_text && (
                   <div className="mb-3">
-                    <p className="text-sm font-semibold text-slate-800 dark:text-white line-clamp-2">
+                    <p className="text-sm font-semibold text-graphite line-clamp-2">
                       {post.question_text}
                     </p>
                   </div>
@@ -227,7 +227,7 @@ const InstagramPostHistory: React.FC = () => {
 
                 {/* Caption */}
                 {post.caption && (
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-3">
+                  <p className="text-sm text-concrete mb-3 line-clamp-3">
                     {post.caption}
                   </p>
                 )}
@@ -238,13 +238,13 @@ const InstagramPostHistory: React.FC = () => {
                     {post.hashtags.slice(0, 3).map((tag, idx) => (
                       <span
                         key={idx}
-                        className="text-xs px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded"
+                        className="text-xs px-2 py-0.5 bg-mist border border-hairline text-graphite rounded-full"
                       >
                         {tag}
                       </span>
                     ))}
                     {post.hashtags.length > 3 && (
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                      <span className="text-xs text-ash">
                         +{post.hashtags.length - 3}
                       </span>
                     )}
@@ -257,14 +257,14 @@ const InstagramPostHistory: React.FC = () => {
                     value={post.publish_status || 'draft'}
                     onChange={(e) => handleUpdateStatus(post.id!, e.target.value as any)}
                     disabled={loading}
-                    className="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
+                    className="text-xs px-2 py-1 rounded-lg border border-hairline bg-chalk text-graphite"
                   >
                     <option value="draft">임시저장</option>
                     <option value="scheduled">예약됨</option>
                     <option value="published">발행됨</option>
                   </select>
 
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-ash">
                     {new Date(post.created_at!).toLocaleDateString('ko-KR')}
                   </span>
                 </div>
@@ -273,14 +273,14 @@ const InstagramPostHistory: React.FC = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setSelectedPost(post)}
-                    className="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-sm text-slate-800 dark:text-white transition-colors"
+                    className="flex-1 px-3 py-2 bg-mist hover:bg-mist border border-hairline rounded-lg text-sm text-graphite transition-colors"
                   >
                     상세보기
                   </button>
                   <button
                     onClick={() => handleDelete(post.id!)}
                     disabled={loading}
-                    className="px-3 py-2 bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-900 rounded text-sm text-red-700 dark:text-red-300 transition-colors disabled:opacity-50"
+                    className="px-3 py-2 bg-chalk border border-hairline hover:bg-mist rounded-lg text-sm text-graphite transition-colors disabled:opacity-50"
                   >
                     🗑️
                   </button>
@@ -298,15 +298,15 @@ const InstagramPostHistory: React.FC = () => {
             className="fixed inset-0 bg-black/50 z-50"
             onClick={() => setSelectedPost(null)}
           />
-          <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white dark:bg-slate-800 rounded-lg shadow-xl z-50 overflow-auto max-h-[90vh]">
+          <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-chalk border border-hairline rounded-card z-50 overflow-auto max-h-[90vh]">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+                <h3 className="text-xl font-bold text-graphite">
                   포스트 상세
                 </h3>
                 <button
                   onClick={() => setSelectedPost(null)}
-                  className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white text-2xl"
+                  className="text-concrete hover:text-graphite text-2xl"
                 >
                   ×
                 </button>
@@ -325,19 +325,19 @@ const InstagramPostHistory: React.FC = () => {
               <div className="space-y-4">
                 {selectedPost.question_text && (
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <h4 className="text-sm font-semibold text-graphite mb-1">
                       질문 텍스트
                     </h4>
-                    <p className="text-slate-800 dark:text-white">{selectedPost.question_text}</p>
+                    <p className="text-graphite">{selectedPost.question_text}</p>
                   </div>
                 )}
 
                 {selectedPost.caption && (
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <h4 className="text-sm font-semibold text-graphite mb-1">
                       캡션
                     </h4>
-                    <p className="text-slate-800 dark:text-white whitespace-pre-wrap">
+                    <p className="text-graphite whitespace-pre-wrap">
                       {selectedPost.caption}
                     </p>
                   </div>
@@ -345,14 +345,14 @@ const InstagramPostHistory: React.FC = () => {
 
                 {selectedPost.hashtags && selectedPost.hashtags.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <h4 className="text-sm font-semibold text-graphite mb-1">
                       해시태그
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedPost.hashtags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded text-sm"
+                          className="px-2 py-1 bg-mist border border-hairline text-graphite rounded-full text-sm"
                         >
                           {tag}
                         </span>
@@ -363,25 +363,25 @@ const InstagramPostHistory: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-slate-600 dark:text-slate-400">생성일:</span>
-                    <p className="text-slate-800 dark:text-white">
+                    <span className="text-concrete">생성일:</span>
+                    <p className="text-graphite">
                       {new Date(selectedPost.created_at!).toLocaleString('ko-KR')}
                     </p>
                   </div>
                   <div>
-                    <span className="text-slate-600 dark:text-slate-400">상태:</span>
-                    <p className="text-slate-800 dark:text-white">{selectedPost.publish_status}</p>
+                    <span className="text-concrete">상태:</span>
+                    <p className="text-graphite">{selectedPost.publish_status}</p>
                   </div>
                   {selectedPost.source && (
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">생성 방식:</span>
-                      <p className="text-slate-800 dark:text-white">{selectedPost.source}</p>
+                      <span className="text-concrete">생성 방식:</span>
+                      <p className="text-graphite">{selectedPost.source}</p>
                     </div>
                   )}
                   {selectedPost.background_url && (
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">배경:</span>
-                      <p className="text-slate-800 dark:text-white text-xs truncate">
+                      <span className="text-concrete">배경:</span>
+                      <p className="text-graphite text-xs truncate">
                         {selectedPost.background_url}
                       </p>
                     </div>
