@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { forward } from './_lib/proxy';
+import { forward } from '../lib/aiProxyForward';
 
 export const config = { maxDuration: 60 };
 
