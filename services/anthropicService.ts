@@ -9,10 +9,19 @@ let currentModel: string = 'claude-sonnet-4-6'; // 기본 모델
 // (호출부 호환을 위해 export는 유지하되 동작은 no-op)
 export function setApiKey(_apiKey: string) { /* 키는 서버에서 관리됨 */ }
 
+const VALID_MODELS = new Set(['claude-opus-4-8', 'claude-sonnet-4-6', 'claude-haiku-4-5']);
+// 구버전 ID → 최신 ID 매핑 (저장된 옛 값 방어)
+const LEGACY_MODELS: Record<string, string> = {
+  'claude-3.5-sonnet': 'claude-sonnet-4-6',
+  'claude-3-5-sonnet': 'claude-sonnet-4-6',
+  'claude-3-opus': 'claude-opus-4-8',
+  'claude-3-haiku': 'claude-haiku-4-5',
+};
+
 export function setModel(model: string) {
-  // UI에 표시되는 모델 값이 곧 실제 Anthropic API 모델 ID이므로 그대로 사용.
-  // (claude-opus-4-8 / claude-sonnet-4-6 / claude-haiku-4-5)
-  currentModel = model || 'claude-sonnet-4-6';
+  // 최신 모델 ID만 허용. 구버전/미지원 값은 매핑하거나 기본값으로 보정.
+  if (VALID_MODELS.has(model)) currentModel = model;
+  else currentModel = LEGACY_MODELS[model] || 'claude-sonnet-4-6';
 }
 
 const getAnthropicInstance = (): Anthropic => {

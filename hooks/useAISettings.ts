@@ -44,7 +44,13 @@ export function useAISettings() {
     };
     try {
       const parsed = saved ? JSON.parse(saved) : {};
-      return { ...defaults, ...parsed };
+      const merged = { ...defaults, ...parsed };
+      // 구버전 Claude 모델 ID(claude-3.5-sonnet 등)가 저장돼 있으면 최신 ID로 보정
+      const validAnthropic = ['claude-opus-4-8', 'claude-sonnet-4-6', 'claude-haiku-4-5'];
+      if (!validAnthropic.includes(merged.anthropic)) {
+        merged.anthropic = 'claude-sonnet-4-6';
+      }
+      return merged;
     } catch {
       return defaults;
     }
