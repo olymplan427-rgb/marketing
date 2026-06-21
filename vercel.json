@@ -12,12 +12,6 @@
       "VITE_GEMINI_API_KEY": ""
     }
   },
-  "crons": [
-    {
-      "path": "/api/cron/instagram-auto-post",
-      "schedule": "0 9 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
