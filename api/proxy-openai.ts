@@ -58,11 +58,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const resp = await fetch(target, { method, headers, body });
-    const buf = Buffer.from(await resp.arrayBuffer());
     res.status(resp.status);
     const ct = resp.headers.get('content-type');
     if (ct) res.setHeader('content-type', ct);
-    res.send(buf);
+    if (!resp.body) { res.end(); return; }
+    // 응답을 버퍼링 없이 그대로 흘려보냄(스트리밍/SSE 지원) → 긴 생성의 게이트웨이 타임아웃 완화
+    const { Readable } = await import('node:stream');
+    await new Promise<void>((resolve, reject) => {
+      Readable.fromWeb(resp.body as any).pipe(res).on('finish', resolve).on('error', reject);
+    });
   } catch (e: any) {
     console.error('proxy-openai error:', e);
     res.status(500).json({ error: 'proxy_error', message: e?.message || String(e) });

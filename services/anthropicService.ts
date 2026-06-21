@@ -174,9 +174,23 @@ export const generateBlogPost = async (prompt: string, _useSearch: boolean = fal
 
     const system = "당신은 전문 블로그 작가입니다. SEO 최적화된 고품질 블로그 포스트를 작성합니다.";
 
-    // Claude는 기본 제공 웹 검색을 사용하지 않으므로 sources는 비워둔다. (OpenAI 서비스와 동일)
-    const text = await callAnthropicWithRetry(system, prompt, 16000);
+    // 긴 글은 스트리밍으로 받아 서버리스 게이트웨이 타임아웃을 방지한다.
+    // (temperature 등 sampling 파라미터는 최신 모델에서 400이므로 전송하지 않음)
+    const client = getAnthropicInstance();
+    const stream = client.messages.stream({
+      model: currentModel,
+      max_tokens: 8000,
+      system,
+      messages: [{ role: 'user', content: prompt }],
+    });
+    const finalMessage = await stream.finalMessage();
+    const text = finalMessage.content
+      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
+      .map((b) => b.text)
+      .join('');
+    if (!text) throw new Error('Claude로부터 응답을 받지 못했습니다.');
 
+    // Claude는 기본 제공 웹 검색을 사용하지 않으므로 sources는 비워둔다.
     return {
       text,
       sources: []
