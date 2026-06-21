@@ -17,12 +17,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const base =
-  'inline-flex items-center justify-center gap-2 transition-colors disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center gap-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-graphite text-chalk hover:bg-carbon disabled:bg-ash',
-  secondary: 'bg-chalk text-graphite border border-hairline hover:bg-mist disabled:text-ash',
-  ghost: 'bg-transparent text-graphite hover:bg-mist disabled:text-ash',
+  // secondary는 mist 채움 + hairline 보더로 다크/라이트 모두에서 카드 배경과 또렷이 구분된다.
+  primary: 'bg-graphite text-chalk hover:bg-carbon',
+  secondary: 'bg-mist text-graphite border border-hairline hover:bg-hairline',
+  ghost: 'bg-transparent text-graphite hover:bg-mist',
 };
 
 const sizes: Record<Size, string> = {
