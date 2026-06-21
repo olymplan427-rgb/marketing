@@ -33,8 +33,8 @@
 
 앱 생성 후:
 1. 좌측 메뉴에서 **설정 > 기본 설정** 클릭
-2. **앱 ID** 복사 (예: `818751050751038`)
-3. **앱 시크릿** 표시 후 복사 (예: `7c69152f15efd00f0a4da3e074e6b1da`)
+2. **앱 ID** 복사 (예: `<your_threads_app_id>`)
+3. **앱 시크릿** 표시 후 복사 (예: `<your_threads_app_secret>`)
 
 ⚠️ **중요**: 앱 시크릿은 절대 공개 저장소에 커밋하지 마세요!
 
@@ -94,8 +94,8 @@ https://ai-blog-generator.vercel.app/auth/threads/callback
 
 ```bash
 # Threads API Configuration
-VITE_THREADS_APP_ID=818751050751038
-VITE_THREADS_APP_SECRET=7c69152f15efd00f0a4da3e074e6b1da
+VITE_THREADS_APP_ID=<your_threads_app_id>
+VITE_THREADS_APP_SECRET=<your_threads_app_secret>
 VITE_THREADS_REDIRECT_URI=http://localhost:5173/auth/threads/callback
 ```
 
@@ -111,8 +111,8 @@ Vercel 대시보드에서 환경 변수 설정:
 
    | Key | Value | Environment |
    |-----|-------|-------------|
-   | `VITE_THREADS_APP_ID` | `818751050751038` | Production, Preview, Development |
-   | `VITE_THREADS_APP_SECRET` | `7c69152f15efd00f0a4da3e074e6b1da` | Production, Preview, Development |
+   | `VITE_THREADS_APP_ID` | `<your_threads_app_id>` | Production, Preview, Development |
+   | `VITE_THREADS_APP_SECRET` | `<your_threads_app_secret>` | Production, Preview, Development |
    | `VITE_THREADS_REDIRECT_URI` | `https://your-domain.vercel.app/auth/threads/callback` | Production |
 
 4. "Save" 클릭

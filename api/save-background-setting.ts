@@ -4,7 +4,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     // CORS
     const allowedOrigins = [
-        'https://ai-blog-generator-yogijogi99.vercel.app',
+        process.env.PRODUCTION_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null),
         process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : null,
         process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : null
     ].filter(Boolean) as string[];

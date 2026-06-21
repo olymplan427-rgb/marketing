@@ -5,7 +5,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // CORS 헤더 설정
     const allowedOrigins = [
         process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : null,
-        'https://ai-blog-generator-yogijogi99.vercel.app'
+        process.env.PRODUCTION_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null)
     ].filter(Boolean) as string[];
 
     const origin = req.headers.origin;

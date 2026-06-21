@@ -7,8 +7,8 @@
 Vercel Dashboard → Your Project → Settings → Environment Variables에서 다음 환경 변수를 추가하세요:
 
 ```
-VITE_SUPABASE_URL=https://wsayvyvhxxykbyrkwzsj.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzYXl2eXZoeHh5a2J5cmt3enNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDIyMDUsImV4cCI6MjA3NzQ3ODIwNX0.cyuT0BrQYsQBB5QM1-PosCOjK6kIXARUES8P_NVRDFM
+VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<your_supabase_anon_key>
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
