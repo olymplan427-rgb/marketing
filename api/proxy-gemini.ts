@@ -61,14 +61,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(resp.status);
     const ct = resp.headers.get('content-type');
     if (ct) res.setHeader('content-type', ct);
+    res.setHeader('cache-control', 'no-cache, no-transform');
+    if (typeof (res as any).flushHeaders === 'function') (res as any).flushHeaders();
     if (!resp.body) { res.end(); return; }
-    // 응답을 버퍼링 없이 그대로 흘려보냄(스트리밍/SSE 지원) → 긴 생성의 게이트웨이 타임아웃 완화
-    const { Readable } = await import('node:stream');
-    await new Promise<void>((resolve, reject) => {
-      Readable.fromWeb(resp.body as any).pipe(res).on('finish', resolve).on('error', reject);
-    });
+    const reader = resp.body.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      res.write(Buffer.from(value));
+    }
+    res.end();
   } catch (e: any) {
     console.error('proxy-gemini error:', e);
-    res.status(500).json({ error: 'proxy_error', message: e?.message || String(e) });
+    if (!res.headersSent) res.status(500).json({ error: 'proxy_error', message: e?.message || String(e) });
+    else try { res.end(); } catch { /* noop */ }
   }
 }
