@@ -5,6 +5,20 @@
 
 shadcn/ui is a strictly monochromatic design system documentation site: pure white canvas, graphite text, and hairline #e5e5e5 borders doing all the structural work. There is zero brand color — the system IS the absence of color, which is the point. Typography (Geist) carries the identity: weight 600 at 48px with -0.05em tracking gives the hero a tight, almost architectural gravity, while body text at 14-16px stays quiet and utilitarian. Components are compact, grid-driven, and border-first: 10px radii, 1px hairline separators, and an almost complete absence of shadow or elevation. The one filled element on the page is the black primary button — it sits like a period at the end of a sentence, deliberate and unmissable against all the white space around it.
 
+## 현재 구현 반영 (Implementation Notes)
+
+> 아래 본문은 디자인 시스템의 **원본 레퍼런스 스펙**(shadcn/ui 기반, light-only, Geist)입니다.
+> 실제 코드(`styles.css`)는 이 시스템을 한국어 앱에 맞게 **적응**했습니다. 작업 시 아래 차이를 기준으로 하세요.
+
+- **토큰 위치**: 색/타이포/스페이싱/radius 토큰은 `styles.css`의 `:root`에 정의. 컴포넌트는 Tailwind 테마 키(`border-hairline`, `bg-graphite`, `text-concrete` 등)로 opt-in.
+- **폰트**: 한국어 본문은 **Pretendard**(`--font-sans`) 유지. Geist는 사용하지 않음. 라틴/숫자 마이크로카피만 `.num` 클래스로 타이트 트래킹(-0.02em) + tabular-nums 적용. (네모틀 한글에 음수 자간을 주면 답답해 보이므로 본문엔 적용 금지.)
+- **다크모드**: 레퍼런스는 light 전용이나, 실제로는 `.dark`에서 **토큰 값 자체를 반전**해 다크모드 구현 (`darkMode: 'class'`, `<html>.dark` 토글). 컴포넌트가 토큰 클래스를 쓰므로 per-element `dark:` 클래스 없이 자동 전환.
+- **Border radius**: 원본 export의 `9996px`/`159981px` 등은 아티팩트 → 제거. 실제 스케일: `--radius-md:4px`(체크박스), `--radius-lg:10px`(nav/input/button), `--radius-xl:14px`(card), `--radius-3xl:26px`(badge), `--radius-full:9999px`(pill/toggle).
+- **Letter-spacing**: px가 아닌 em 사용 — display `-0.05em`, subheading `-0.025em`.
+- **스페이싱**: `--spacing-48`(48px) 추가, 원본의 `--spacing-5`/`--spacing-83`은 미사용.
+
+---
+
 ## Tokens — Colors
 
 | Name | Value | Token | Role |

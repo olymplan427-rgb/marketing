@@ -46,9 +46,14 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here
 cat supabase-schema.sql
 ```
 
-실행 후 다음 테이블이 생성됩니다:
+`supabase-schema.sql`은 통합 셋업 스크립트입니다. 한 번 실행하면 다음이 모두 생성됩니다(재실행해도 안전):
 - **content_history**: 생성된 컨텐츠 저장
-- **saved_prompt_templates**: 프롬프트 템플릿 저장 (선택사항)
+- **user_settings**: 사용자 설정 (AI 키, 프롬프트 템플릿, SNS 채널, `threads_tokens` 포함)
+- **instagram_posts** / **instagram_accounts**: Instagram 포스트·계정
+- **instagram_text_pool**: Instagram 텍스트 풀
+- Storage 버킷: `instagram-backgrounds`, `instagram-posts`
+
+> 참고: 과거에 사용하던 `saved_prompt_templates` 테이블은 더 이상 사용하지 않습니다. 프롬프트 템플릿은 `user_settings.prompt_templates`(JSONB)에 저장됩니다. 이미 해당 테이블이 있는 기존 DB는 `cleanup-unused-tables.sql`로 제거할 수 있습니다.
 
 ### 3.3 테이블 확인
 1. 좌측 메뉴에서 `Table Editor` 클릭
@@ -121,10 +126,7 @@ npm run dev
 **A**: Supabase Auth 인증을 사용하면 여러 브라우저/기기에서 데이터를 동기화할 수 있습니다. 로그인하면 같은 계정의 데이터에 접근할 수 있습니다.
 
 ### Q: Threads 연동 상태가 다른 브라우저에서 보이지 않아요
-**A**: 
-1. `supabase-migration-threads-tokens.sql` 파일을 Supabase SQL Editor에서 실행하세요.
-2. 이 파일은 `user_settings` 테이블에 `threads_tokens` 컬럼을 추가합니다.
-3. 마이그레이션 후 Threads 토큰이 Supabase에 저장되어 모든 브라우저에서 공유됩니다.
+**A**: `threads_tokens` 컬럼은 `supabase-schema.sql`의 `user_settings` 테이블에 이미 포함되어 있습니다. 최신 스키마를 실행했다면 Threads 토큰이 Supabase에 저장되어 모든 브라우저에서 공유됩니다. (단, Threads 자동 포스팅 기능 자체는 현재 미완성 상태입니다.)
 
 ## 9. 향후 개선 사항
 

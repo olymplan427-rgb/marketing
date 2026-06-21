@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle, iconType }) => {
     const renderIcon = () => {
         switch (iconType) {
             case 'tistory':
-                return <img src="/components/티스토리.png" alt="티스토리" className="w-7 h-7 object-contain" />;
+                return <img src="/tistory-logo.png" alt="티스토리" className="w-7 h-7 object-contain" />;
 
             case 'instagram':
                 return (
