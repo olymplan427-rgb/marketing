@@ -1,31 +1,12 @@
 import OpenAI from 'openai';
 import type { BlogGenerationParams, FieldSuggestions, BlogPostResult } from '../types';
+import { proxyBase, proxyFetch } from './aiAuth';
 
 let openai: OpenAI | null = null;
-let currentApiKey: string | null = null;
 let currentModel: string = 'gpt-4o'; // 기본 모델
 
-export function setApiKey(apiKey: string) {
-  const sanitizedKey = apiKey?.trim().replace(/[^\x00-\x7F]/g, '') || '';
-
-  if (sanitizedKey && sanitizedKey !== currentApiKey) {
-    try {
-      openai = new OpenAI({
-        apiKey: sanitizedKey,
-        dangerouslyAllowBrowser: true // 클라이언트 사이드에서 사용
-      });
-      currentApiKey = sanitizedKey;
-    } catch (error) {
-      console.error("Failed to initialize OpenAI with the new API key:", error);
-      openai = null;
-      currentApiKey = null;
-      throw new Error("API 키 초기화에 실패했습니다. 유효한 키인지 확인해주세요.");
-    }
-  } else if (!sanitizedKey) {
-    openai = null;
-    currentApiKey = null;
-  }
-}
+// API 키는 서버리스 프록시(/api/proxy/openai)에서 주입되므로 브라우저에서는 보관하지 않는다.
+export function setApiKey(_apiKey: string) { /* 키는 서버에서 관리됨 */ }
 
 export function setModel(model: string) {
   // UI에서 표시되는 모델명을 실제 OpenAI API 모델명으로 매핑
@@ -45,29 +26,12 @@ export function setModel(model: string) {
 
 const getOpenAIInstance = (): OpenAI => {
   if (!openai) {
-    // localStorage에서 API 키 확인
-    const savedApiKeys = localStorage.getItem('ai_api_keys');
-    let storedApiKey = '';
-
-    if (savedApiKeys) {
-      try {
-        const parsedKeys = JSON.parse(savedApiKeys);
-        storedApiKey = (parsedKeys.openai || '').trim();
-      } catch (e) {
-        console.error('API 키 파싱 오류:', e);
-      }
-    }
-
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-      if(openai) return openai;
-    }
-
-    throw new Error(
-      "OpenAI API 키가 설정되지 않았습니다.\n\n" +
-      "상단 메뉴에서 'AI 설정'으로 이동하여 API 키를 입력해주세요.\n" +
-      "API 키는 OpenAI Platform(https://platform.openai.com/api-keys)에서 발급받을 수 있습니다."
-    );
+    openai = new OpenAI({
+      apiKey: 'proxy', // 실제 키는 서버 프록시에서 주입 (플레이스홀더)
+      baseURL: `${proxyBase()}/api/proxy/openai/v1`,
+      fetch: proxyFetch,
+      dangerouslyAllowBrowser: true,
+    });
   }
   return openai;
 };

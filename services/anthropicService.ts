@@ -1,31 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { BlogGenerationParams, FieldSuggestions, BlogPostResult } from '../types';
+import { proxyBase, proxyFetch } from './aiAuth';
 
 let anthropic: Anthropic | null = null;
-let currentApiKey: string | null = null;
 let currentModel: string = 'claude-sonnet-4-6'; // 기본 모델
 
-export function setApiKey(apiKey: string) {
-  const sanitizedKey = apiKey?.trim().replace(/[^\x00-\x7F]/g, '') || '';
-
-  if (sanitizedKey && sanitizedKey !== currentApiKey) {
-    try {
-      anthropic = new Anthropic({
-        apiKey: sanitizedKey,
-        dangerouslyAllowBrowser: true // 클라이언트 사이드에서 사용
-      });
-      currentApiKey = sanitizedKey;
-    } catch (error) {
-      console.error("Failed to initialize Anthropic with the new API key:", error);
-      anthropic = null;
-      currentApiKey = null;
-      throw new Error("API 키 초기화에 실패했습니다. 유효한 키인지 확인해주세요.");
-    }
-  } else if (!sanitizedKey) {
-    anthropic = null;
-    currentApiKey = null;
-  }
-}
+// API 키는 서버리스 프록시(/api/proxy/anthropic)에서 주입되므로 브라우저에서는 보관하지 않는다.
+// (호출부 호환을 위해 export는 유지하되 동작은 no-op)
+export function setApiKey(_apiKey: string) { /* 키는 서버에서 관리됨 */ }
 
 export function setModel(model: string) {
   // UI에 표시되는 모델 값이 곧 실제 Anthropic API 모델 ID이므로 그대로 사용.
@@ -35,29 +17,12 @@ export function setModel(model: string) {
 
 const getAnthropicInstance = (): Anthropic => {
   if (!anthropic) {
-    // localStorage에서 API 키 확인
-    const savedApiKeys = localStorage.getItem('ai_api_keys');
-    let storedApiKey = '';
-
-    if (savedApiKeys) {
-      try {
-        const parsedKeys = JSON.parse(savedApiKeys);
-        storedApiKey = (parsedKeys.anthropic || '').trim();
-      } catch (e) {
-        console.error('API 키 파싱 오류:', e);
-      }
-    }
-
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-      if (anthropic) return anthropic;
-    }
-
-    throw new Error(
-      "Anthropic(Claude) API 키가 설정되지 않았습니다.\n\n" +
-      "상단 메뉴에서 'AI 설정'으로 이동하여 API 키를 입력해주세요.\n" +
-      "API 키는 Anthropic Console(https://console.anthropic.com/settings/keys)에서 발급받을 수 있습니다."
-    );
+    anthropic = new Anthropic({
+      apiKey: 'proxy', // 실제 키는 서버 프록시에서 주입 (플레이스홀더)
+      baseURL: `${proxyBase()}/api/proxy/anthropic`,
+      fetch: proxyFetch,
+      dangerouslyAllowBrowser: true,
+    });
   }
   return anthropic;
 };
